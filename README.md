@@ -1,5 +1,5 @@
-# minimalist_api_tester
+# Postboy Pro
 
-A minimalist app to test APIs...
+A minimalistic desktop app to test APIs...
 
 

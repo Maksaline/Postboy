@@ -113,7 +113,7 @@ class _BuilderContainerState extends State<BuilderContainer> {
                             // Handle send request action
                           },
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            padding: const EdgeInsets.symmetric(vertical: 9.0),
                             child: Row(
                               children: [
                                 Icon(Icons.send, color: Theme.of(context).colorScheme.onSecondary),
