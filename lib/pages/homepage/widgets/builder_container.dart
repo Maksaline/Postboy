@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:minimalist_api_tester/cubits/theme_cubit.dart';
 
+import '../../../cubits/response_cubit.dart';
+
 class BuilderContainer extends StatefulWidget {
   const BuilderContainer({super.key});
 
@@ -12,7 +14,9 @@ class BuilderContainer extends StatefulWidget {
 class _BuilderContainerState extends State<BuilderContainer> {
   String requestType = 'GET';
   int tabIndex = 0;
+  final TextEditingController urlController = TextEditingController();
   final tabs = ['Header', 'Body', 'Params', 'Authentication'];
+  final key = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -107,20 +111,33 @@ class _BuilderContainerState extends State<BuilderContainer> {
                               ),
                             ),
                             SizedBox(width: 8.0),
-                            Expanded(
-                              child: TextFormField(
-                                decoration: InputDecoration(
-                                  filled: true,
-                                  fillColor: Theme.of(context).colorScheme.outline,
-                                  labelText: 'Enter URL',
-                                  hintText: 'https://api.example.com/endpoint',
+                            Form(
+                              key: key,
+                              child: Expanded(
+                                child: TextFormField(
+                                  controller: urlController,
+                                  onFieldSubmitted: (value) {
+
+                                  },
+                                  decoration: InputDecoration(
+                                    filled: true,
+                                    fillColor: Theme.of(context).colorScheme.outline,
+                                    labelText: 'Enter URL',
+                                    hintText: 'https://api.example.com/endpoint',
+                                  ),
                                 ),
                               ),
                             ),
                             SizedBox(width: 8.0),
                             ElevatedButton(
                               onPressed: () {
-                                // Handle send request action
+                                if(key.currentState?.validate() ?? false) {
+                                  context.read<ResponseCubit>().loadResponse(urlController.text.toString().trim(), requestType);
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(content: Text('Please enter a valid URL')),
+                                  );
+                                }
                               },
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(vertical: 9.0),

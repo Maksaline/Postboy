@@ -1,0 +1,46 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
+
+part 'response_state.dart';
+
+class ResponseCubit extends Cubit<ResponseState> {
+  ResponseCubit() : super(ResponseInitial());
+  final dio = Dio();
+  late Response response;
+
+  void loadResponse(String url, String method) async {
+    emit(ResponseLoading());
+
+    try{
+      final start = DateTime.now();
+      if (url.isEmpty) {
+        emit(ResponseFailure(message: "URL cannot be empty"));
+        return;
+      }
+      if(method == 'GET') {
+        response = await dio.get(url);
+      } else if(method == 'POST') {
+        response = await dio.post(url);
+      } else if(method == 'PUT') {
+        response = await dio.put(url);
+      } else {
+        response = await dio.delete(url);
+      }
+
+      final end = DateTime.now();
+
+      emit(ResponseLoaded(
+        statusCode: response.statusCode ?? 0,
+        statusMessage: response.statusMessage ?? '',
+        headers: response.headers.map.toString(),
+        body: response.data.toString(),
+        time: end.difference(start).inMilliseconds,
+        size: response.data?.toString().length ?? 0,
+      ));
+    }catch(e) {
+      emit(ResponseFailure(message: e.toString()));
+      return;
+    }
+  }
+}
