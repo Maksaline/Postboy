@@ -70,7 +70,7 @@ class _BuilderContainerState extends State<BuilderContainer> {
                           children: [
                             Icon(Icons.save, color: Theme.of(context).colorScheme.onSecondary),
                             SizedBox(width: 8.0),
-                            Text('Save', style: Theme.of(context).textTheme.bodyMedium),
+                            Text('Save', style: Theme.of(context).textTheme.labelLarge),
                           ],
                         ),
                       )
@@ -145,7 +145,7 @@ class _BuilderContainerState extends State<BuilderContainer> {
                                   children: [
                                     Icon(Icons.send, color: Theme.of(context).colorScheme.onSecondary),
                                     SizedBox(width: 8.0),
-                                    Text('Send', style: Theme.of(context).textTheme.labelLarge),
+                                    Text('Send', style: Theme.of(context).textTheme.bodyLarge),
                                   ],
                                 ),
                               ),
