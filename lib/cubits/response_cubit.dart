@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -35,11 +37,14 @@ class ResponseCubit extends Cubit<ResponseState> {
 
     final end = DateTime.now();
 
+    const JsonEncoder encoder = JsonEncoder.withIndent('  ');
+    String formattedBody = encoder.convert(response.data);
+
     emit(ResponseLoaded(
       statusCode: response.statusCode ?? 0,
       statusMessage: response.statusMessage ?? '',
       headers: response.headers.map.toString(),
-      body: response.data.toString(),
+      body: formattedBody,
       time: end.difference(start).inMilliseconds,
       size: response.data?.toString().length ?? 0,
     ));

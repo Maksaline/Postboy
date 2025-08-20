@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../cubits/response_cubit.dart';
@@ -56,20 +57,22 @@ class _ResponseContainerState extends State<ResponseContainer> {
             ],
           )
         ),
-        BlocBuilder<ResponseCubit, ResponseState>(
-            builder: (context, state) {
-              if( state is ResponseInitial) {
-                return initialResponse(context);
-              } else
-              if (state is ResponseLoading) {
-                return loadingResponse();
-              } else if (state is ResponseLoaded) {
-                return loadedResponse(state, context);
-              } else if (state is ResponseFailure) {
-                return Expanded(child: Center(child: Text('Error: ${state.message}', style: Theme.of(context).textTheme.bodyMedium)));
+        Expanded(
+          child: BlocBuilder<ResponseCubit, ResponseState>(
+              builder: (context, state) {
+                if( state is ResponseInitial) {
+                  return initialResponse(context);
+                } else
+                if (state is ResponseLoading) {
+                  return loadingResponse();
+                } else if (state is ResponseLoaded) {
+                  return loadedResponse(state, context);
+                } else if (state is ResponseFailure) {
+                  return Expanded(child: Center(child: Text('Error: ${state.message}', style: Theme.of(context).textTheme.bodyMedium)));
+                }
+                return const SizedBox.shrink();
               }
-              return const SizedBox.shrink();
-            }
+          ),
         ),
       ],
     );
@@ -145,22 +148,68 @@ class _ResponseContainerState extends State<ResponseContainer> {
                   ],
                 ),
                 const SizedBox(height: 16.0),
-                Container(
-                  padding: EdgeInsets.all(8.0),
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.outline,
-                    borderRadius: BorderRadius.circular(8.0),
-                    border: Border.all(
-                      color: Theme.of(context).colorScheme.onPrimary,
+                Flexible(
+                  child: Container(
+                    padding: EdgeInsets.all(8.0),
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.outline,
+                      borderRadius: BorderRadius.circular(8.0),
+                      border: Border.all(
+                        color: Theme.of(context).colorScheme.onPrimary,
+                      ),
+                    ),
+                    child: SingleChildScrollView(
+                      child: SelectableText(  // Use SelectableText for better UX
+                        state.body.isEmpty ? 'No body content' : state.body,
+                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                          fontFamily: 'monospace', // Better for JSON display
+                        ),
+                      ),
                     ),
                   ),
-                  child: Text(
-                    state.body.isEmpty ? 'No body content' : state.body,
-                    style: Theme.of(context).textTheme.bodyLarge,
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 20,
-                  ),
+                ),
+                const SizedBox(height: 8.0),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Theme.of(context).colorScheme.outline,
+                      ),
+                      onPressed: () {
+                        // Handle save response action
+
+                      },
+                      child: Row(
+                        children: [
+                          Icon(Icons.format_align_left, size: 16.0),
+                          const SizedBox(width: 4.0),
+                          Text('Format'),
+                        ],
+                      ),
+                    ),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Theme.of(context).colorScheme.outline,
+                      ),
+                      onPressed: () {
+                        // Handle copy response action
+                        Clipboard.setData(ClipboardData(text: state.body));
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Response copied to clipboard'))
+                        );
+                      },
+                      child: Row(
+                        children: [
+                          Icon(Icons.copy, size: 16.0),
+                          const SizedBox(width: 4.0),
+                          Text('Copy'),
+                        ],
+                      ),
+                    )
+
+                  ],
                 )
               ],
             );
@@ -169,35 +218,31 @@ class _ResponseContainerState extends State<ResponseContainer> {
       );
   }
 
-  Expanded loadingResponse() {
+  Center loadingResponse() {
     return
-      Expanded(
-        child: Center(
-          child: CircularProgressIndicator()
-        ),
+      Center(
+        child: CircularProgressIndicator()
       );
   }
 
-  Expanded initialResponse(BuildContext context) {
+  Column initialResponse(BuildContext context) {
     return
-      Expanded(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Icon(Icons.send, color: Theme.of(context).colorScheme.onPrimary, size: 64.0),
-            const SizedBox(height: 16.0),
-            Text(
-              'No response yet',
-              style: Theme.of(context).textTheme.bodyLarge,
-            ),
-            const SizedBox(height: 8.0),
-            Text(
-              'Send a request to see the response here.',
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-          ],
-        ),
+      Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Icon(Icons.send, color: Theme.of(context).colorScheme.onPrimary, size: 64.0),
+          const SizedBox(height: 16.0),
+          Text(
+            'No response yet',
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
+          const SizedBox(height: 8.0),
+          Text(
+            'Send a request to see the response here.',
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+        ],
       );
   }
 }
