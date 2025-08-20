@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:minimalist_api_tester/pages/homepage/widgets/builder_container.dart';
 import 'package:minimalist_api_tester/pages/homepage/widgets/collection_container.dart';
+import 'package:minimalist_api_tester/pages/homepage/widgets/response_container.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
@@ -26,9 +27,7 @@ class _HomepageState extends State<Homepage> {
           ),
           Flexible(
             flex: 3,
-            child: Container(
-              height: double.infinity,
-            ),
+            child: ResponseContainer()
           ),
         ],
       )

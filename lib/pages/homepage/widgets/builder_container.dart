@@ -179,6 +179,13 @@ class _BuilderContainerState extends State<BuilderContainer> {
                                   width: double.infinity,
                                   height: double.infinity,
                                   decoration: BoxDecoration(
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Theme.of(context).colorScheme.outline,
+                                        blurRadius: 2.0,
+                                        spreadRadius: 3.0,
+                                      ),
+                                    ],
                                     color: Theme.of(context).colorScheme.surface,
                                     borderRadius: BorderRadius.circular(8.0),
                                     border: Border.all(
@@ -201,6 +208,13 @@ class _BuilderContainerState extends State<BuilderContainer> {
                                   decoration: BoxDecoration(
                                     color: Theme.of(context).colorScheme.surface,
                                     borderRadius: BorderRadius.circular(8.0),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Theme.of(context).colorScheme.outline,
+                                        blurRadius: 2.0,
+                                        spreadRadius: 3.0,
+                                      ),
+                                    ],
                                     border: Border.all(
                                       color: Theme.of(context).colorScheme.onPrimary,
                                     ),
