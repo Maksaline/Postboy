@@ -15,7 +15,7 @@ class _BuilderContainerState extends State<BuilderContainer> {
   String requestType = 'GET';
   int tabIndex = 0;
   final TextEditingController urlController = TextEditingController();
-  final tabs = ['Header', 'Body', 'Params', 'Authentication'];
+  final tabs = ['Params', 'Body', 'JSON', 'Authentication'];
   final key = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
@@ -117,7 +117,19 @@ class _BuilderContainerState extends State<BuilderContainer> {
                                 child: TextFormField(
                                   controller: urlController,
                                   onFieldSubmitted: (value) {
-
+                                    if(value.isEmpty) {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(content: Text('Please enter a valid URL')),
+                                      );
+                                    } else {
+                                      context.read<ResponseCubit>().loadResponse(value.trim(), requestType);
+                                    }
+                                  },
+                                  validator: (value) {
+                                    if(value == null || value.isEmpty) {
+                                      return 'Please enter a valid URL';
+                                    }
+                                    return null;
                                   },
                                   decoration: InputDecoration(
                                     filled: true,
@@ -131,7 +143,7 @@ class _BuilderContainerState extends State<BuilderContainer> {
                             SizedBox(width: 8.0),
                             ElevatedButton(
                               onPressed: () {
-                                if(key.currentState?.validate() ?? false) {
+                                if(urlController.text.isNotEmpty) {
                                   context.read<ResponseCubit>().loadResponse(urlController.text.toString().trim(), requestType);
                                 } else {
                                   ScaffoldMessenger.of(context).showSnackBar(
