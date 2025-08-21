@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:minimalist_api_tester/cubits/theme_cubit.dart';
+import 'package:minimalist_api_tester/pages/homepage/widgets/key_value_pair.dart';
 
 import '../../../cubits/response_cubit.dart';
+import 'key_value_row.dart';
 
 class BuilderContainer extends StatefulWidget {
   const BuilderContainer({super.key});
@@ -17,6 +19,89 @@ class _BuilderContainerState extends State<BuilderContainer> {
   final TextEditingController urlController = TextEditingController();
   final tabs = ['Params', 'Body', 'JSON', 'Authentication'];
   final key = GlobalKey<FormState>();
+  List<KeyValuePair> keyValuePairs = [];
+
+  void addKeyValuePair() {
+    if (keyValuePairs.isNotEmpty) {
+      bool hasEmptyFields = keyValuePairs.any((pair) =>
+      pair.keyController.text.isEmpty || pair.valueController.text.isEmpty
+      );
+
+      if (hasEmptyFields) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content:
+          Row(
+            children: [
+              Icon(Icons.warning, color: Colors.red),
+              SizedBox(width: 8.0),
+              Text('Please fill all the key and value before adding a new pair'),
+            ],
+          )
+          ),
+        );
+        return;
+      }
+    }
+
+    setState(() {
+      keyValuePairs.add(KeyValuePair());
+    });
+  }
+
+  void clearKeyValuePair(int index) {
+    setState(() {
+      keyValuePairs[index].keyController.clear();
+      keyValuePairs[index].valueController.clear();
+    });
+    buildUrlWithQueryParams();
+  }
+
+  void deleteKeyValuePair(int index) {
+    setState(() {
+      keyValuePairs[index].keyController.dispose();
+      keyValuePairs[index].valueController.dispose();
+      keyValuePairs.removeAt(index);
+    });
+    buildUrlWithQueryParams();
+  }
+
+  void buildUrlWithQueryParams() {
+    String baseUrl = urlController.text.trim();
+
+    if (baseUrl.isEmpty) {
+      return;
+    }
+
+    String cleanBaseUrl = baseUrl.split('?')[0];
+
+    List<String> queryParams = [];
+    for (var pair in keyValuePairs) {
+      String key = pair.keyController.text.trim();
+      String value = pair.valueController.text.trim();
+
+      String encodedKey = Uri.encodeComponent(key);
+      String encodedValue = Uri.encodeComponent(value);
+      if(key.isNotEmpty || value.isNotEmpty) queryParams.add('$encodedKey=$encodedValue');
+    }
+
+    String finalUrl;
+    if (queryParams.isNotEmpty) {
+      finalUrl = '$cleanBaseUrl?${queryParams.join('&')}';
+    } else {
+      finalUrl = cleanBaseUrl;
+    }
+
+    setState(() {
+      urlController.text = finalUrl;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    addKeyValuePair(); // Initialize with one key-value pair
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -204,7 +289,7 @@ class _BuilderContainerState extends State<BuilderContainer> {
                               Flexible(
                                 flex: 5,
                                 child: Container(
-                                  padding: EdgeInsets.all(16.0),
+                                  padding: EdgeInsets.all(24.0),
                                   width: double.infinity,
                                   height: double.infinity,
                                   decoration: BoxDecoration(
@@ -221,7 +306,8 @@ class _BuilderContainerState extends State<BuilderContainer> {
                                       color: Theme.of(context).colorScheme.onPrimary,
                                     ),
                                   ),
-                                  child: tabIndex == 0 ? const Text('Header Content') :
+                                  child: tabIndex == 0 ?
+                                  paramsBuilder(context) :
                                     tabIndex == 1 ? const Text('Body Content') :
                                     tabIndex == 2 ? const Text('Params Content') :
                                     const Text('Authentication Content')
@@ -264,5 +350,84 @@ class _BuilderContainerState extends State<BuilderContainer> {
         }
       ),
     );
+  }
+
+  SingleChildScrollView paramsBuilder(BuildContext context) {
+    return
+      SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Query Parameters', style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).colorScheme.onSecondary.withAlpha(180)
+            )),
+            const SizedBox(height: 16.0),
+            Row(
+              children: [
+                Expanded(
+                  flex: 3,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 8.0),
+                    child: Text('Key', style: Theme.of(context).textTheme.bodyLarge),
+                  ),
+                ),
+                Expanded(
+                  flex: 5,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 8.0),
+                    child: Text('Value', style: Theme.of(context).textTheme.bodyLarge),
+                  ),
+                ),
+                Expanded(
+                  flex: 1,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 8.0),
+                    child: Text('Actions', style: Theme.of(context).textTheme.bodyLarge),
+                  ),
+                ),
+              ],
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                ...keyValuePairs.asMap().entries.map((entry) {
+                  int index = entry.key;
+                  KeyValuePair pair = entry.value;
+
+                  return KeyValueRow(
+                    keyController: pair.keyController,
+                    valueController: pair.valueController,
+                    onClear: () => clearKeyValuePair(index),
+                    onDelete: () => deleteKeyValuePair(index),
+                    onKeyChanged: (value) => buildUrlWithQueryParams(),
+                    onValueChanged: (value) => buildUrlWithQueryParams(),
+                    onKeySubmitted: (value) => buildUrlWithQueryParams(),
+                    onValueSubmitted: (value) => buildUrlWithQueryParams(),
+                  );
+                }),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ElevatedButton(
+                    onPressed: addKeyValuePair,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Theme.of(context).colorScheme.outline,
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.add, color: Theme.of(context).colorScheme.onSecondary),
+                        SizedBox(width: 8.0),
+                        Text('Add Parameter', style: Theme.of(context).textTheme.labelLarge),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            )
+          ],
+        ),
+      );
   }
 }
