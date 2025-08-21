@@ -68,7 +68,7 @@ class _ResponseContainerState extends State<ResponseContainer> {
                 } else if (state is ResponseLoaded) {
                   return loadedResponse(state, context);
                 } else if (state is ResponseFailure) {
-                  return Expanded(child: Center(child: Text('Error: ${state.message}', style: Theme.of(context).textTheme.bodyMedium)));
+                  return errorResponse(context);
                 }
                 return const SizedBox.shrink();
               }
@@ -225,24 +225,53 @@ class _ResponseContainerState extends State<ResponseContainer> {
       );
   }
 
-  Column initialResponse(BuildContext context) {
+  Padding initialResponse(BuildContext context) {
     return
-      Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Icon(Icons.send, color: Theme.of(context).colorScheme.onPrimary, size: 64.0),
-          const SizedBox(height: 16.0),
-          Text(
-            'No response yet',
-            style: Theme.of(context).textTheme.bodyLarge,
-          ),
-          const SizedBox(height: 8.0),
-          Text(
-            'Send a request to see the response here.',
-            style: Theme.of(context).textTheme.bodyMedium,
-          ),
-        ],
+      Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Icon(Icons.send, color: Theme.of(context).colorScheme.onPrimary, size: 64.0),
+            const SizedBox(height: 16.0),
+            Text(
+              'No response yet',
+              style: Theme.of(context).textTheme.bodyLarge,
+            ),
+            const SizedBox(height: 8.0),
+            Text(
+              'Send a request to see the response here.',
+              style: Theme.of(context).textTheme.bodyMedium,
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      );
+  }
+
+  Padding errorResponse(BuildContext context) {
+    return
+      Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Icon(Icons.error, color: ThemeCubit.errorRed.withAlpha(95), size: 64.0),
+            const SizedBox(height: 16.0),
+            Text(
+              'Invalid Url',
+              style: Theme.of(context).textTheme.bodyLarge,
+            ),
+            const SizedBox(height: 8.0),
+            Text(
+              'The URL you entered is invalid. Please check the URL and try again.',
+              style: Theme.of(context).textTheme.bodyMedium,
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
       );
   }
 }

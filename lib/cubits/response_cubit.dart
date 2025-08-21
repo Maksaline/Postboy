@@ -25,28 +25,33 @@ class ResponseCubit extends Cubit<ResponseState> {
       emit(ResponseFailure(message: "URL cannot be empty"));
       return;
     }
-    if(method == 'GET') {
-      response = await dio.get(url);
-    } else if(method == 'POST') {
-      response = await dio.post(url);
-    } else if(method == 'PUT') {
-      response = await dio.put(url);
-    } else {
-      response = await dio.delete(url);
+    try{
+      if(method == 'GET') {
+        response = await dio.get(url);
+      } else if(method == 'POST') {
+        response = await dio.post(url);
+      } else if(method == 'PUT') {
+        response = await dio.put(url);
+      } else {
+        response = await dio.delete(url);
+      }
+
+      final end = DateTime.now();
+
+      const JsonEncoder encoder = JsonEncoder.withIndent('  ');
+      String formattedBody = encoder.convert(response.data);
+
+      emit(ResponseLoaded(
+        statusCode: response.statusCode ?? 0,
+        statusMessage: response.statusMessage ?? '',
+        headers: response.headers.map.toString(),
+        body: formattedBody,
+        time: end.difference(start).inMilliseconds,
+        size: response.data?.toString().length ?? 0,
+      ));
+    }catch (e) {
+      emit(ResponseFailure(message: e.toString()));
+      return;
     }
-
-    final end = DateTime.now();
-
-    const JsonEncoder encoder = JsonEncoder.withIndent('  ');
-    String formattedBody = encoder.convert(response.data);
-
-    emit(ResponseLoaded(
-      statusCode: response.statusCode ?? 0,
-      statusMessage: response.statusMessage ?? '',
-      headers: response.headers.map.toString(),
-      body: formattedBody,
-      time: end.difference(start).inMilliseconds,
-      size: response.data?.toString().length ?? 0,
-    ));
   }
 }
