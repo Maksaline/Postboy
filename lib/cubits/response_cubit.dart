@@ -17,7 +17,12 @@ class ResponseCubit extends Cubit<ResponseState> {
   );
   late Response response;
 
-  void loadResponse(String url, String method) async {
+  void loadResponse(
+      String url,
+      String method,{
+        Map<String, dynamic>? bodyMap,
+        String? authToken,
+  }) async {
     emit(ResponseLoading());
 
     final start = DateTime.now();
@@ -25,15 +30,25 @@ class ResponseCubit extends Cubit<ResponseState> {
       emit(ResponseFailure(message: "URL cannot be empty"));
       return;
     }
+    Map<String, dynamic> requestHeaders = {};
+    if (authToken != null && authToken.isNotEmpty) {
+      requestHeaders['Authorization'] = 'Bearer $authToken';
+    }
+
+    Options options = Options(
+      headers: requestHeaders.isNotEmpty ? requestHeaders : null,
+    );
+    // print(bodyMap);
+
     try{
       if(method == 'GET') {
-        response = await dio.get(url);
+        response = await dio.get(url, data: bodyMap, options: options);
       } else if(method == 'POST') {
-        response = await dio.post(url);
+        response = await dio.post(url, data: bodyMap, options: options);
       } else if(method == 'PUT') {
-        response = await dio.put(url);
+        response = await dio.put(url, data: bodyMap, options: options);
       } else {
-        response = await dio.delete(url);
+        response = await dio.delete(url, data: bodyMap, options: options);
       }
 
       final end = DateTime.now();

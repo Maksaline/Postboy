@@ -18,7 +18,9 @@ class BuilderContainer extends StatefulWidget {
 class _BuilderContainerState extends State<BuilderContainer> {
   String requestType = 'GET';
   String jsonBody = '';
+  String authToken = '';
   int tabIndex = 0;
+  Map<String, dynamic> jsonBodyMap = {};
   final TextEditingController urlController = TextEditingController();
   final tabs = ['Params', 'Body', 'JSON', 'Authentication'];
   final key = GlobalKey<FormState>();
@@ -132,14 +134,18 @@ class _BuilderContainerState extends State<BuilderContainer> {
   }
 
   void clearBodyParamsPair(int index) {
+    String key = bodyPairs[index].keyController.text.trim();
     setState(() {
+      jsonBodyMap.remove(key);
       bodyPairs[index].keyController.clear();
       bodyPairs[index].valueController.clear();
     });
   }
 
   void deleteBodyParamsPair(int index) {
+    String key = bodyPairs[index].keyController.text.trim();
     setState(() {
+      jsonBodyMap.remove(key);
       bodyPairs[index].keyController.dispose();
       bodyPairs[index].valueController.dispose();
       bodyPairs.removeAt(index);
@@ -147,7 +153,7 @@ class _BuilderContainerState extends State<BuilderContainer> {
   }
 
   void buildJsonBody() {
-    Map<String, dynamic> jsonBodyMap = {};
+    jsonBodyMap.clear(); // Clear previous map
     for (var pair in bodyPairs) {
       String key = pair.keyController.text.trim();
       String value = pair.valueController.text.trim();
@@ -309,7 +315,10 @@ class _BuilderContainerState extends State<BuilderContainer> {
                             ElevatedButton(
                               onPressed: () {
                                 if(urlController.text.isNotEmpty) {
-                                  context.read<ResponseCubit>().loadResponse(urlController.text.toString().trim(), requestType);
+                                  context.read<ResponseCubit>().loadResponse(urlController.text.toString().trim(), requestType,
+                                    bodyMap: jsonBodyMap.isNotEmpty ? jsonBodyMap : null,
+                                    authToken: authToken.isNotEmpty ? authToken : '75601ed27a2426ac65185cc895f211891b83e6c24570c86d81bce03a12dee2cc',
+                                  );
                                 } else {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(content: Text('Please enter a valid URL')),
@@ -392,7 +401,7 @@ class _BuilderContainerState extends State<BuilderContainer> {
                                         bodyParamsBuilder(context) :
                                     tabIndex == 2 ?
                                         jsonBuilder(context) :
-                                    const Text('Authentication Content')
+                                    authBuilder(context)
                                 ),
                               ),
                               Flexible(
@@ -564,8 +573,8 @@ class _BuilderContainerState extends State<BuilderContainer> {
                   return KeyValueRow(
                     keyController: pair.keyController,
                     valueController: pair.valueController,
-                    onClear: () => clearParamsPair(index),
-                    onDelete: () => deleteParamsPair(index),
+                    onClear: () => clearBodyParamsPair(index),
+                    onDelete: () => deleteBodyParamsPair(index),
                     onKeyChanged: (value) => buildJsonBody(),
                     onValueChanged: (value) => buildJsonBody(),
                     onKeySubmitted: (value) => buildJsonBody(),
@@ -631,6 +640,49 @@ class _BuilderContainerState extends State<BuilderContainer> {
               ),
             ),
           ),
+        ],
+      );
+  }
+  Column authBuilder(BuildContext context) {
+    return
+      Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Authentication', style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+              fontWeight: FontWeight.bold,
+              color: Theme.of(context).colorScheme.onSecondary.withAlpha(200)
+          )),
+          const SizedBox(height: 8.0),
+          Text('Provide your authentication token here. Only bearer tokens are supported.',
+              style: Theme.of(context).textTheme.bodyMedium),
+          const SizedBox(height: 16.0),
+          Row(
+            children: [
+              Text('Token:', style: Theme.of(context).textTheme.bodyLarge),
+              const SizedBox(width: 16.0),
+              Expanded(
+                child: TextFormField(
+                  initialValue: authToken,
+                  onChanged: (value) {
+                    setState(() {
+                      authToken = value.trim();
+                    });
+                  },
+                  onFieldSubmitted: (value) {
+                    setState(() {
+                      authToken = value.trim();
+                    });
+                  },
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: Theme.of(context).colorScheme.outline,
+                    hintText: 'Enter your authentication token',
+                  ),
+                ),
+              )
+            ],
+          )
         ],
       );
   }
