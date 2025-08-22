@@ -20,6 +20,8 @@ class _BuilderContainerState extends State<BuilderContainer> {
   String jsonBody = '';
   String authToken = '';
   int tabIndex = 0;
+  bool bodyNeeded = false;
+  bool authNeeded = false;
   Map<String, dynamic> jsonBodyMap = {};
   final TextEditingController urlController = TextEditingController();
   final tabs = ['Params', 'Body', 'JSON', 'Authentication'];
@@ -316,8 +318,8 @@ class _BuilderContainerState extends State<BuilderContainer> {
                               onPressed: () {
                                 if(urlController.text.isNotEmpty) {
                                   context.read<ResponseCubit>().loadResponse(urlController.text.toString().trim(), requestType,
-                                    bodyMap: jsonBodyMap.isNotEmpty ? jsonBodyMap : null,
-                                    authToken: authToken.isNotEmpty ? authToken : '75601ed27a2426ac65185cc895f211891b83e6c24570c86d81bce03a12dee2cc',
+                                    bodyMap: (jsonBodyMap.isNotEmpty && bodyNeeded) ? jsonBodyMap : null,
+                                    authToken: (authToken.isNotEmpty && authNeeded) ? authToken : null,
                                   );
                                 } else {
                                   ScaffoldMessenger.of(context).showSnackBar(
@@ -529,10 +531,30 @@ class _BuilderContainerState extends State<BuilderContainer> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Parameters for Raw JSON Body', style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).colorScheme.onSecondary.withAlpha(200)
-            )),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Parameters for Raw JSON Body', style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.onSecondary.withAlpha(200)
+                )),
+                Row(
+                  children: [
+                    Checkbox(
+                      value: bodyNeeded,
+                      onChanged: (value) {
+                        setState(() {
+                          bodyNeeded = value ?? false;
+                        });
+                      },
+                      // activeColor: Theme.of(context).colorScheme.primary,
+                    ),
+                    SizedBox(width: 4.0),
+                    Text('Provide Body', style: Theme.of(context).textTheme.bodyLarge),
+                  ],
+                )
+              ],
+            ),
             const SizedBox(height: 8.0),
             Text('You can use this to send raw JSON data in the body of your request. '
                 'Each key-value pair will be converted to a JSON object.',
@@ -611,10 +633,30 @@ class _BuilderContainerState extends State<BuilderContainer> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('JSON Body', style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: Theme.of(context).colorScheme.onSecondary.withAlpha(200)
-          )),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text('JSON Body', style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).colorScheme.onSecondary.withAlpha(200)
+              )),
+              Row(
+                children: [
+                  Checkbox(
+                    value: bodyNeeded,
+                    onChanged: (value) {
+                      setState(() {
+                        bodyNeeded = value ?? false;
+                      });
+                    },
+                    // activeColor: Theme.of(context).colorScheme.primary,
+                  ),
+                  SizedBox(width: 4.0),
+                  Text('Provide Body', style: Theme.of(context).textTheme.bodyLarge),
+                ],
+              )
+            ],
+          ),
           const SizedBox(height: 8.0),
           Text('JSON body will be generated based on the key-value pairs you provide. ',
               style: Theme.of(context).textTheme.bodyMedium),
@@ -649,10 +691,30 @@ class _BuilderContainerState extends State<BuilderContainer> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Authentication', style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: Theme.of(context).colorScheme.onSecondary.withAlpha(200)
-          )),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text('Authentication', style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).colorScheme.onSecondary.withAlpha(200)
+              )),
+              Row(
+                children: [
+                  Checkbox(
+                    value: authNeeded,
+                    onChanged: (value) {
+                      setState(() {
+                        authNeeded = value ?? false;
+                      });
+                    },
+                    // activeColor: Theme.of(context).colorScheme.primary,
+                  ),
+                  SizedBox(width: 4.0),
+                  Text('Provide Token', style: Theme.of(context).textTheme.bodyLarge),
+                ],
+              )
+            ],
+          ),
           const SizedBox(height: 8.0),
           Text('Provide your authentication token here. Only bearer tokens are supported.',
               style: Theme.of(context).textTheme.bodyMedium),

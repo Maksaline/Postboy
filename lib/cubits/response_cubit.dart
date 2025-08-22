@@ -38,7 +38,6 @@ class ResponseCubit extends Cubit<ResponseState> {
     Options options = Options(
       headers: requestHeaders.isNotEmpty ? requestHeaders : null,
     );
-    // print(bodyMap);
 
     try{
       if(method == 'GET') {
