@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:minimalist_api_tester/cubits/theme_cubit.dart';
@@ -15,12 +17,15 @@ class BuilderContainer extends StatefulWidget {
 
 class _BuilderContainerState extends State<BuilderContainer> {
   String requestType = 'GET';
+  String jsonBody = '';
   int tabIndex = 0;
   final TextEditingController urlController = TextEditingController();
   final tabs = ['Params', 'Body', 'JSON', 'Authentication'];
   final key = GlobalKey<FormState>();
   List<KeyValuePair> paramsPairs = [];
+  List<KeyValuePair> bodyPairs = [];
 
+  //----- Query Parameters' function start -----//
   void addParamsPair() {
     if (paramsPairs.isNotEmpty) {
       bool hasEmptyFields = paramsPairs.any((pair) =>
@@ -95,11 +100,86 @@ class _BuilderContainerState extends State<BuilderContainer> {
       urlController.text = finalUrl;
     });
   }
+  //----- Query Parameters' function end -----//
+
+
+  //----- Body Parameters' function start -----//
+  void addBodyParamsPair() {
+    if (bodyPairs.isNotEmpty) {
+      bool hasEmptyFields = bodyPairs.any((pair) =>
+        pair.keyController.text.isEmpty || pair.valueController.text.isEmpty
+      );
+
+      if (hasEmptyFields) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content:
+          Row(
+            children: [
+              Icon(Icons.warning, color: Colors.red),
+              SizedBox(width: 8.0),
+              Text('Please fill all the key and value before adding a new pair'),
+            ],
+          )
+          ),
+        );
+        return;
+      }
+    }
+
+    setState(() {
+      bodyPairs.add(KeyValuePair());
+    });
+  }
+
+  void clearBodyParamsPair(int index) {
+    setState(() {
+      bodyPairs[index].keyController.clear();
+      bodyPairs[index].valueController.clear();
+    });
+  }
+
+  void deleteBodyParamsPair(int index) {
+    setState(() {
+      bodyPairs[index].keyController.dispose();
+      bodyPairs[index].valueController.dispose();
+      bodyPairs.removeAt(index);
+    });
+  }
+
+  void buildJsonBody() {
+    Map<String, dynamic> jsonBodyMap = {};
+    for (var pair in bodyPairs) {
+      String key = pair.keyController.text.trim();
+      String value = pair.valueController.text.trim();
+
+      if (key.isNotEmpty || value.isNotEmpty) {
+        if (value.toLowerCase() == 'true') {
+          jsonBodyMap[key] = true;
+        } else if (value.toLowerCase() == 'false') {
+          jsonBodyMap[key] = false;
+        } else if (value.toLowerCase() == 'null') {
+          jsonBodyMap[key] = null;
+        } else if (int.tryParse(value) != null) {
+          jsonBodyMap[key] = int.parse(value);
+        } else if (double.tryParse(value) != null) {
+          jsonBodyMap[key] = double.parse(value);
+        } else {
+          jsonBodyMap[key] = value; // Keep as string if no other type matches
+        }
+      }
+    }
+
+    setState(() {
+      jsonBody = jsonBodyMap.isNotEmpty ? JsonEncoder.withIndent('  ').convert(jsonBodyMap) : '';
+    });
+  }
+  //----- Body Parameters' function end -----//
 
   @override
   void initState() {
     super.initState();
     addParamsPair(); // Initialize with one key-value pair
+    addBodyParamsPair();
   }
 
   @override
@@ -308,8 +388,10 @@ class _BuilderContainerState extends State<BuilderContainer> {
                                   ),
                                   child: tabIndex == 0 ?
                                   paramsBuilder(context) :
-                                    tabIndex == 1 ? const Text('Body Content') :
-                                    tabIndex == 2 ? const Text('Params Content') :
+                                    tabIndex == 1 ?
+                                        bodyParamsBuilder(context) :
+                                    tabIndex == 2 ?
+                                        jsonBuilder(context) :
                                     const Text('Authentication Content')
                                 ),
                               ),
@@ -361,7 +443,7 @@ class _BuilderContainerState extends State<BuilderContainer> {
           children: [
             Text('Query Parameters', style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                 fontWeight: FontWeight.bold,
-                color: Theme.of(context).colorScheme.onSecondary.withAlpha(180)
+                color: Theme.of(context).colorScheme.onSecondary.withAlpha(200)
             )),
             const SizedBox(height: 16.0),
             Row(
@@ -428,6 +510,128 @@ class _BuilderContainerState extends State<BuilderContainer> {
             )
           ],
         ),
+      );
+  }
+
+  SingleChildScrollView bodyParamsBuilder(BuildContext context) {
+    return
+      SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Parameters for Raw JSON Body', style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).colorScheme.onSecondary.withAlpha(200)
+            )),
+            const SizedBox(height: 8.0),
+            Text('You can use this to send raw JSON data in the body of your request. '
+                'Each key-value pair will be converted to a JSON object.',
+                style: Theme.of(context).textTheme.bodyMedium),
+            const SizedBox(height: 16.0),
+            Row(
+              children: [
+                Expanded(
+                  flex: 3,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 8.0),
+                    child: Text('Key', style: Theme.of(context).textTheme.bodyLarge),
+                  ),
+                ),
+                Expanded(
+                  flex: 5,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 8.0),
+                    child: Text('Value', style: Theme.of(context).textTheme.bodyLarge),
+                  ),
+                ),
+                Expanded(
+                  flex: 1,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 8.0),
+                    child: Text('Actions', style: Theme.of(context).textTheme.bodyLarge),
+                  ),
+                ),
+              ],
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                ...bodyPairs.asMap().entries.map((entry) {
+                  int index = entry.key;
+                  KeyValuePair pair = entry.value;
+
+                  return KeyValueRow(
+                    keyController: pair.keyController,
+                    valueController: pair.valueController,
+                    onClear: () => clearParamsPair(index),
+                    onDelete: () => deleteParamsPair(index),
+                    onKeyChanged: (value) => buildJsonBody(),
+                    onValueChanged: (value) => buildJsonBody(),
+                    onKeySubmitted: (value) => buildJsonBody(),
+                    onValueSubmitted: (value) => buildJsonBody(),
+                  );
+                }),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ElevatedButton(
+                    onPressed: addBodyParamsPair,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Theme.of(context).colorScheme.outline,
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.add, color: Theme.of(context).colorScheme.onSecondary),
+                        SizedBox(width: 8.0),
+                        Text('Add Parameter', style: Theme.of(context).textTheme.labelLarge),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            )
+          ],
+        ),
+      );
+  }
+
+  Column jsonBuilder(BuildContext context) {
+    return
+      Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('JSON Body', style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+              fontWeight: FontWeight.bold,
+              color: Theme.of(context).colorScheme.onSecondary.withAlpha(200)
+          )),
+          const SizedBox(height: 8.0),
+          Text('JSON body will be generated based on the key-value pairs you provide. ',
+              style: Theme.of(context).textTheme.bodyMedium),
+          const SizedBox(height: 16.0),
+          Flexible(
+            child: Container(
+              padding: EdgeInsets.all(8.0),
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.outline,
+                borderRadius: BorderRadius.circular(8.0),
+                border: Border.all(
+                  color: Theme.of(context).colorScheme.onPrimary,
+                ),
+              ),
+              child: SingleChildScrollView(
+                child: SelectableText(  // Use SelectableText for better UX
+                  jsonBody.isEmpty ? 'Add Parameters from the Body section' : jsonBody,
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    fontFamily: 'monospace', // Better for JSON display
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       );
   }
 }

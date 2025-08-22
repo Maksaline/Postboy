@@ -62,8 +62,8 @@ class KeyValueRow extends StatelessWidget {
             flex: 1,
             child: Container(
               padding: EdgeInsets.all(4.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              child: Wrap(
+                crossAxisAlignment: WrapCrossAlignment.start,
                 children: [
                   IconButton(
                     icon: Icon(Icons.clear, size: 16),
