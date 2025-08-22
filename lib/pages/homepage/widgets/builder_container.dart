@@ -19,11 +19,11 @@ class _BuilderContainerState extends State<BuilderContainer> {
   final TextEditingController urlController = TextEditingController();
   final tabs = ['Params', 'Body', 'JSON', 'Authentication'];
   final key = GlobalKey<FormState>();
-  List<KeyValuePair> keyValuePairs = [];
+  List<KeyValuePair> paramsPairs = [];
 
-  void addKeyValuePair() {
-    if (keyValuePairs.isNotEmpty) {
-      bool hasEmptyFields = keyValuePairs.any((pair) =>
+  void addParamsPair() {
+    if (paramsPairs.isNotEmpty) {
+      bool hasEmptyFields = paramsPairs.any((pair) =>
       pair.keyController.text.isEmpty || pair.valueController.text.isEmpty
       );
 
@@ -44,23 +44,23 @@ class _BuilderContainerState extends State<BuilderContainer> {
     }
 
     setState(() {
-      keyValuePairs.add(KeyValuePair());
+      paramsPairs.add(KeyValuePair());
     });
   }
 
-  void clearKeyValuePair(int index) {
+  void clearParamsPair(int index) {
     setState(() {
-      keyValuePairs[index].keyController.clear();
-      keyValuePairs[index].valueController.clear();
+      paramsPairs[index].keyController.clear();
+      paramsPairs[index].valueController.clear();
     });
     buildUrlWithQueryParams();
   }
 
-  void deleteKeyValuePair(int index) {
+  void deleteParamsPair(int index) {
     setState(() {
-      keyValuePairs[index].keyController.dispose();
-      keyValuePairs[index].valueController.dispose();
-      keyValuePairs.removeAt(index);
+      paramsPairs[index].keyController.dispose();
+      paramsPairs[index].valueController.dispose();
+      paramsPairs.removeAt(index);
     });
     buildUrlWithQueryParams();
   }
@@ -75,7 +75,7 @@ class _BuilderContainerState extends State<BuilderContainer> {
     String cleanBaseUrl = baseUrl.split('?')[0];
 
     List<String> queryParams = [];
-    for (var pair in keyValuePairs) {
+    for (var pair in paramsPairs) {
       String key = pair.keyController.text.trim();
       String value = pair.valueController.text.trim();
 
@@ -99,7 +99,7 @@ class _BuilderContainerState extends State<BuilderContainer> {
   @override
   void initState() {
     super.initState();
-    addKeyValuePair(); // Initialize with one key-value pair
+    addParamsPair(); // Initialize with one key-value pair
   }
 
   @override
@@ -392,15 +392,15 @@ class _BuilderContainerState extends State<BuilderContainer> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                ...keyValuePairs.asMap().entries.map((entry) {
+                ...paramsPairs.asMap().entries.map((entry) {
                   int index = entry.key;
                   KeyValuePair pair = entry.value;
 
                   return KeyValueRow(
                     keyController: pair.keyController,
                     valueController: pair.valueController,
-                    onClear: () => clearKeyValuePair(index),
-                    onDelete: () => deleteKeyValuePair(index),
+                    onClear: () => clearParamsPair(index),
+                    onDelete: () => deleteParamsPair(index),
                     onKeyChanged: (value) => buildUrlWithQueryParams(),
                     onValueChanged: (value) => buildUrlWithQueryParams(),
                     onKeySubmitted: (value) => buildUrlWithQueryParams(),
@@ -410,7 +410,7 @@ class _BuilderContainerState extends State<BuilderContainer> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: ElevatedButton(
-                    onPressed: addKeyValuePair,
+                    onPressed: addParamsPair,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Theme.of(context).colorScheme.outline,
                     ),
