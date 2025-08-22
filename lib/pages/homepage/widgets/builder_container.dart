@@ -109,26 +109,26 @@ class _BuilderContainerState extends State<BuilderContainer> {
 
   //----- Body Parameters' function start -----//
   void addBodyParamsPair() {
-    if (bodyPairs.isNotEmpty) {
-      bool hasEmptyFields = bodyPairs.any((pair) =>
-        pair.keyController.text.isEmpty || pair.valueController.text.isEmpty
-      );
-
-      if (hasEmptyFields) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content:
-          Row(
-            children: [
-              Icon(Icons.warning, color: Colors.red),
-              SizedBox(width: 8.0),
-              Text('Please fill all the key and value before adding a new pair'),
-            ],
-          )
-          ),
-        );
-        return;
-      }
-    }
+    // if (bodyPairs.isNotEmpty) {
+    //   bool hasEmptyFields = bodyPairs.any((pair) =>
+    //     pair.keyController.text.isEmpty || pair.valueController.text.isEmpty
+    //   );
+    //
+    //   if (hasEmptyFields) {
+    //     ScaffoldMessenger.of(context).showSnackBar(
+    //       SnackBar(content:
+    //       Row(
+    //         children: [
+    //           Icon(Icons.warning, color: Colors.red),
+    //           SizedBox(width: 8.0),
+    //           Text('Please fill all the key and value before adding a new pair'),
+    //         ],
+    //       )
+    //       ),
+    //     );
+    //     return;
+    //   }
+    // }
 
     setState(() {
       bodyPairs.add(KeyValuePair());
