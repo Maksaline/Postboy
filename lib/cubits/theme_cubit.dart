@@ -276,10 +276,10 @@ class ThemeCubit extends Cubit<ThemeData> {
           if (states.contains(WidgetState.selected)) {
             return primaryOrange;
           }
-          return Colors.transparent;
+          return borderLight;
         }),
         checkColor: WidgetStateProperty.all(Colors.white),
-        side: const BorderSide(color: borderLight, width: 2),
+        side: const BorderSide(color: Colors.black54, width: 2),
       ),
 
       // Radio Theme
@@ -570,10 +570,10 @@ class ThemeCubit extends Cubit<ThemeData> {
           if (states.contains(WidgetState.selected)) {
             return primaryOrange;
           }
-          return Colors.transparent;
+          return borderDark;
         }),
         checkColor: WidgetStateProperty.all(Colors.white),
-        side: const BorderSide(color: borderDark, width: 2),
+        side: const BorderSide(color: Colors.white54, width: 2),
       ),
 
       // Radio Theme
