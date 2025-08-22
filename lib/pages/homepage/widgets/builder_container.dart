@@ -738,8 +738,6 @@ class _BuilderContainerState extends State<BuilderContainer> {
                     });
                   },
                   decoration: InputDecoration(
-                    filled: true,
-                    fillColor: Theme.of(context).colorScheme.outline,
                     hintText: 'Enter your authentication token',
                   ),
                 ),
