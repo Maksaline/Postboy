@@ -46,13 +46,15 @@ class ResponseCubit extends Cubit<ResponseState> {
         response = await dio.post(url, data: bodyMap, options: options);
       } else if(method == 'PUT') {
         response = await dio.put(url, data: bodyMap, options: options);
-      } else {
+      } else if(method == 'DELETE') {
         response = await dio.delete(url, data: bodyMap, options: options);
+      } else {
+        response = await dio.patch(url, data: bodyMap, options: options);
       }
 
       final end = DateTime.now();
 
-      const JsonEncoder encoder = JsonEncoder.withIndent('  ');
+      const JsonEncoder encoder = JsonEncoder.withIndent('    ');
       String formattedBody = encoder.convert(response.data);
 
       emit(ResponseLoaded(

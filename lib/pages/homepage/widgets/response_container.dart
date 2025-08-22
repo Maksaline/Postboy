@@ -161,7 +161,7 @@ class _ResponseContainerState extends State<ResponseContainer> {
                     ),
                     child: SingleChildScrollView(
                       child: SelectableText(  // Use SelectableText for better UX
-                        state.body.isEmpty ? 'No body content' : state.body,
+                        (state.body.isEmpty || state.body == 'null') ? 'No body content' : state.body,
                         style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                           fontFamily: 'monospace', // Better for JSON display
                         ),

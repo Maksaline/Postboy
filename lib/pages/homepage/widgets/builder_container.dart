@@ -279,6 +279,7 @@ class _BuilderContainerState extends State<BuilderContainer> {
                                     DropdownMenuItem(value: 'POST', child: Text('POST', style: TextStyle(color: Colors.blue))),
                                     DropdownMenuItem(value: 'PUT', child: Text('PUT', style: TextStyle(color: Colors.orange))),
                                     DropdownMenuItem(value: 'DELETE', child: Text('DELETE', style: TextStyle(color: Colors.red))),
+                                    DropdownMenuItem(value: 'PATCH', child: Text('PATCH', style: TextStyle(color: Colors.purple))),
                                   ],
                                 ),
                               ),
