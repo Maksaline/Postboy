@@ -160,7 +160,7 @@ class _BuilderContainerState extends State<BuilderContainer> {
     }
 
     setState(() {
-      jsonBody = jsonBodyMap.isNotEmpty ? JsonEncoder.withIndent('  ').convert(jsonBodyMap) : '';
+      jsonBody = jsonBodyMap.isNotEmpty ? JsonEncoder.withIndent('    ').convert(jsonBodyMap) : '';
     });
   }
   //----- Body Parameters' function end -----//
