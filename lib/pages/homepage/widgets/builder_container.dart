@@ -198,7 +198,7 @@ class _BuilderContainerState extends State<BuilderContainer> {
 
       if (key.isNotEmpty) {
         if(value.isEmpty) {
-          expectedOutputMap[key] = null;
+          expectedOutputMap[key] = "<<<Anything>>>";
         } else if (value.toLowerCase() == 'true') {
           expectedOutputMap[key] = true;
         } else if (value.toLowerCase() == 'false') {

@@ -56,30 +56,28 @@ class ResponseCubit extends Cubit<ResponseState> {
       final end = DateTime.now();
 
       int verdict = 0;
-      bool found = false;
+      int found = 0;
 
       if(expectedMap != null && expectedMap.isNotEmpty) {
         for(var map in expectedMap.entries) {
           if(response.data is List) {
             for(int i=0; i<response.data.length; i++) {
               if(response.data[i] != null && response.data[i][map.key] != null) {
-                if(map.value == null || response.data[i][map.key].toString() == map.value.toString()) {
-                  found = true;
+                if(map.value == "<<<Anything>>>" || response.data[i][map.key].toString() == map.value.toString()) {
+                  found++;
                 }
               }
             }
           } else {
             if(response.data != null && response.data[map.key] != null) {
-              if(map.value == null) {
-                found = true;
-              } else if(map.value != null && response.data[map.key].toString() == map.value.toString()) {
-                found = true;
+              if(map.value == "<<<Anything>>>" || response.data[map.key].toString() == map.value.toString()) {
+                found++;
               }
             }
           }
         }
       }
-      if(found) {
+      if(found == expectedMap?.length) {
         verdict = 1;
       } else {
         verdict = 2;
