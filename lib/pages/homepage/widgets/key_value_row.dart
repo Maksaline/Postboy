@@ -9,6 +9,7 @@ class KeyValueRow extends StatelessWidget {
   final ValueChanged<String> onValueChanged;
   final ValueChanged<String> onKeySubmitted;
   final ValueChanged<String> onValueSubmitted;
+  final bool enabled;
 
   const KeyValueRow({
     super.key,
@@ -20,6 +21,7 @@ class KeyValueRow extends StatelessWidget {
     required this.onValueChanged,
     required this.onKeySubmitted,
     required this.onValueSubmitted,
+    this.enabled = true,
   });
 
   @override
@@ -33,6 +35,7 @@ class KeyValueRow extends StatelessWidget {
             child: Container(
               padding: EdgeInsets.only(right: 8.0),
               child: TextFormField(
+                enabled: enabled,
                 controller: keyController,
                 onChanged: onKeyChanged,
                 onFieldSubmitted: onKeySubmitted,
@@ -48,6 +51,7 @@ class KeyValueRow extends StatelessWidget {
             child: Container(
               padding: EdgeInsets.only(right: 8.0),
               child: TextFormField(
+                enabled: enabled,
                 controller: valueController,
                 onChanged: onValueChanged,
                 onFieldSubmitted: onValueSubmitted,
@@ -67,12 +71,12 @@ class KeyValueRow extends StatelessWidget {
                 children: [
                   IconButton(
                     icon: Icon(Icons.clear, size: 16),
-                    onPressed: onClear,
+                    onPressed: (enabled) ? onClear : null,
                     tooltip: 'Clear',
                   ),
                   IconButton(
                     icon: Icon(Icons.delete, size: 16),
-                    onPressed: onDelete,
+                    onPressed: (enabled) ? onDelete : null,
                     tooltip: 'Delete',
                   ),
                 ],

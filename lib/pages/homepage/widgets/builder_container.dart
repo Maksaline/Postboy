@@ -22,12 +22,15 @@ class _BuilderContainerState extends State<BuilderContainer> {
   int tabIndex = 0;
   bool bodyNeeded = false;
   bool authNeeded = false;
+  bool expectOutput = false;
   Map<String, dynamic> jsonBodyMap = {};
+  Map<String, dynamic> expectedOutputMap = {};
   final TextEditingController urlController = TextEditingController();
   final tabs = ['Params', 'Body', 'JSON', 'Authentication'];
   final key = GlobalKey<FormState>();
   List<KeyValuePair> paramsPairs = [];
   List<KeyValuePair> bodyPairs = [];
+  List<KeyValuePair> expectedPairs = [];
 
   //----- Query Parameters' function start -----//
   void addParamsPair() {
@@ -109,27 +112,6 @@ class _BuilderContainerState extends State<BuilderContainer> {
 
   //----- Body Parameters' function start -----//
   void addBodyParamsPair() {
-    // if (bodyPairs.isNotEmpty) {
-    //   bool hasEmptyFields = bodyPairs.any((pair) =>
-    //     pair.keyController.text.isEmpty || pair.valueController.text.isEmpty
-    //   );
-    //
-    //   if (hasEmptyFields) {
-    //     ScaffoldMessenger.of(context).showSnackBar(
-    //       SnackBar(content:
-    //       Row(
-    //         children: [
-    //           Icon(Icons.warning, color: Colors.red),
-    //           SizedBox(width: 8.0),
-    //           Text('Please fill all the key and value before adding a new pair'),
-    //         ],
-    //       )
-    //       ),
-    //     );
-    //     return;
-    //   }
-    // }
-
     setState(() {
       bodyPairs.add(KeyValuePair());
     });
@@ -183,11 +165,64 @@ class _BuilderContainerState extends State<BuilderContainer> {
   }
   //----- Body Parameters' function end -----//
 
+
+  //----- Expected Output Parameters' function start -----//
+  void addExpectedOutputParamsPair() {
+    setState(() {
+      expectedPairs.add(KeyValuePair());
+    });
+  }
+
+  void clearExpectedOutputParamsPair(int index) {
+    setState(() {
+      expectedPairs[index].keyController.clear();
+      expectedPairs[index].valueController.clear();
+    });
+    buildExpectedOutput();
+  }
+
+  void deleteExpectedOutputParamsPair(int index) {
+    setState(() {
+      expectedPairs[index].keyController.dispose();
+      expectedPairs[index].valueController.dispose();
+      expectedPairs.removeAt(index);
+    });
+    buildExpectedOutput();
+  }
+
+  void buildExpectedOutput() {
+    expectedOutputMap.clear(); // Clear previous map
+    for (var pair in expectedPairs) {
+      String key = pair.keyController.text.trim();
+      String value = pair.valueController.text.trim();
+
+      if (key.isNotEmpty) {
+        if(value.isEmpty) {
+          expectedOutputMap[key] = null;
+        } else if (value.toLowerCase() == 'true') {
+          expectedOutputMap[key] = true;
+        } else if (value.toLowerCase() == 'false') {
+          expectedOutputMap[key] = false;
+        } else if (value.toLowerCase() == 'null') {
+          expectedOutputMap[key] = null;
+        } else if (int.tryParse(value) != null) {
+          expectedOutputMap[key] = int.parse(value);
+        } else if (double.tryParse(value) != null) {
+          expectedOutputMap[key] = double.parse(value);
+        } else {
+          expectedOutputMap[key] = value; // Keep as string if no other type matches
+        }
+      }
+    }
+  }
+  //----- Expected Output Parameters' function end -----//
+
   @override
   void initState() {
     super.initState();
     addParamsPair(); // Initialize with one key-value pair
     addBodyParamsPair();
+    addExpectedOutputParamsPair();
   }
 
   @override
@@ -321,6 +356,7 @@ class _BuilderContainerState extends State<BuilderContainer> {
                                   context.read<ResponseCubit>().loadResponse(urlController.text.toString().trim(), requestType,
                                     bodyMap: (jsonBodyMap.isNotEmpty && bodyNeeded) ? jsonBodyMap : null,
                                     authToken: (authToken.isNotEmpty && authNeeded) ? authToken : null,
+                                    expectedMap: (expectedOutputMap.isNotEmpty && expectOutput) ? expectedOutputMap : null,
                                   );
                                 } else {
                                   ScaffoldMessenger.of(context).showSnackBar(
@@ -428,7 +464,7 @@ class _BuilderContainerState extends State<BuilderContainer> {
                                       color: Theme.of(context).colorScheme.onPrimary,
                                     ),
                                   ),
-                                  child: const Text('Response will be displayed here'),
+                                  child: expectedOutputBuilder(context),
                                 ),
                               ),
                             ],
@@ -686,6 +722,7 @@ class _BuilderContainerState extends State<BuilderContainer> {
         ],
       );
   }
+
   Column authBuilder(BuildContext context) {
     return
       Column(
@@ -745,6 +782,99 @@ class _BuilderContainerState extends State<BuilderContainer> {
             ],
           )
         ],
+      );
+  }
+
+  SingleChildScrollView expectedOutputBuilder(BuildContext context) {
+    return
+      SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Checkbox(
+                  value: expectOutput,
+                  onChanged: (value) {
+                    setState(() {
+                      expectOutput = value ?? false;
+                    });
+                  },
+                ),
+                SizedBox(width: 4.0),
+                Text('Expected Output', style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.onSecondary.withAlpha(200)
+                )),
+              ],
+            ),
+            const SizedBox(height: 16.0),
+            Row(
+              children: [
+                Expanded(
+                  flex: 3,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 8.0),
+                    child: Text('Key', style: Theme.of(context).textTheme.bodyLarge),
+                  ),
+                ),
+                Expanded(
+                  flex: 5,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 8.0),
+                    child: Text('Value', style: Theme.of(context).textTheme.bodyLarge),
+                  ),
+                ),
+                Expanded(
+                  flex: 1,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 8.0),
+                    child: Text('Actions', style: Theme.of(context).textTheme.bodyLarge),
+                  ),
+                ),
+              ],
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                ...expectedPairs.asMap().entries.map((entry) {
+                  int index = entry.key;
+                  KeyValuePair pair = entry.value;
+
+                  return KeyValueRow(
+                    enabled: expectOutput,
+                    keyController: pair.keyController,
+                    valueController: pair.valueController,
+                    onClear: () => clearExpectedOutputParamsPair(index),
+                    onDelete: () => deleteExpectedOutputParamsPair(index),
+                    onKeyChanged: (value) => buildExpectedOutput(),
+                    onValueChanged: (value) => buildExpectedOutput(),
+                    onKeySubmitted: (value) => buildExpectedOutput(),
+                    onValueSubmitted: (value) => buildExpectedOutput(),
+                  );
+                }),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ElevatedButton(
+                    onPressed: (expectOutput) ? addExpectedOutputParamsPair : null,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Theme.of(context).colorScheme.outline,
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.add, color: Theme.of(context).colorScheme.onSecondary),
+                        SizedBox(width: 8.0),
+                        Text('Add New Key Value', style: Theme.of(context).textTheme.labelLarge),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            )
+          ],
+        ),
       );
   }
 }

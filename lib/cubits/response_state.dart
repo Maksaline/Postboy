@@ -14,6 +14,8 @@ final class ResponseLoaded extends ResponseState {
   final String body;
   final int time;
   final int size;
+  final int? verdict;
+  final String? expected;
 
   ResponseLoaded({
     required this.statusCode,
@@ -22,6 +24,8 @@ final class ResponseLoaded extends ResponseState {
     required this.body,
     required this.time,
     required this.size,
+    this.verdict,
+    this.expected,
   });
 }
 

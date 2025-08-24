@@ -66,6 +66,8 @@ class _ResponseContainerState extends State<ResponseContainer> {
                 if (state is ResponseLoading) {
                   return loadingResponse();
                 } else if (state is ResponseLoaded) {
+                  print(state.verdict);
+                  print(state.expected);
                   return loadedResponse(state, context);
                 } else if (state is ResponseFailure) {
                   return errorResponse(context);
