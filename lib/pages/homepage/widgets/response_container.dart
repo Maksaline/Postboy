@@ -13,6 +13,8 @@ class ResponseContainer extends StatefulWidget {
 }
 
 class _ResponseContainerState extends State<ResponseContainer> {
+  int tabIndex = 0;
+  final List<String> tabs = ['Response', 'Verdict'];
 
   Color _getStatusColor(int code) {
     if (code >= 200 && code < 300) return ThemeCubit.successGreen;
@@ -66,8 +68,6 @@ class _ResponseContainerState extends State<ResponseContainer> {
                 if (state is ResponseLoading) {
                   return loadingResponse();
                 } else if (state is ResponseLoaded) {
-                  print(state.verdict);
-                  print(state.expected);
                   return loadedResponse(state, context);
                 } else if (state is ResponseFailure) {
                   return errorResponse(context);
@@ -83,14 +83,49 @@ class _ResponseContainerState extends State<ResponseContainer> {
   Padding loadedResponse(ResponseLoaded state, BuildContext context) {
     int code = state.statusCode ?? 0;
     Color statusColor = _getStatusColor(code);
+    String expected = state.expected ?? 'No body content for comparison';
     return
       Padding(
         padding: const EdgeInsets.all(16.0),
         child: BlocBuilder<ThemeCubit, ThemeData>(
           builder: (context, theme) {
             return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
+                if(state.verdict != 0) Container(
+                  padding: EdgeInsets.all(4.0),
+                  width: double.infinity,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.outline,
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  child: Row(
+                    children: tabs.map((tab) => Expanded(
+                      child: InkWell(
+                        onTap: () {
+                          setState(() {
+                            tabIndex = tabs.indexOf(tab);
+                          });
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: tabIndex == tabs.indexOf(tab) ? Theme.of(context).colorScheme.surface : Colors.transparent,
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          child: Center(
+                            child: Text(
+                              tab,
+                              style: Theme.of(context).textTheme.labelLarge,
+                            ),
+                          ),
+                        ),
+                      ),
+                    )).toList(),
+                  ),
+                ),
+                if(state.verdict != 0) const SizedBox(height: 16.0),
+                (tabIndex == 0) ? Row(
                   children: [
                     Container(
                       padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 0.0),
@@ -148,8 +183,67 @@ class _ResponseContainerState extends State<ResponseContainer> {
                       ),
                     )
                   ],
-                ),
+                )
+                : Container(
+                  padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+                  decoration: BoxDecoration(
+                      color: state.verdict == 1 ? ThemeCubit.successGreen.withAlpha(40) : ThemeCubit.errorRed.withAlpha(40),
+                      borderRadius: BorderRadius.circular(8.0),
+                      border: Border.all(
+                        color: state.verdict == 1 ? ThemeCubit.successGreen : ThemeCubit.errorRed,
+                        width: 1.0,
+                      )
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        (state.verdict == 1) ? Icons.check_circle : Icons.cancel,
+                        color: state.verdict == 1 ? ThemeCubit.successGreen : ThemeCubit.errorRed,
+                      ),
+                      const SizedBox(width: 8.0),
+                      Text(
+                        (state.verdict == 1) ? 'Matched' : "Not Matched",
+                        style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                          color: state.verdict == 1 ? ThemeCubit.successGreen : ThemeCubit.errorRed,
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+                ,
                 const SizedBox(height: 16.0),
+                if(tabIndex == 1) Text(
+                  'Expected',
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
+                if(tabIndex == 1) const SizedBox(height: 8.0),
+                if(tabIndex == 1) Flexible(
+                  child: Container(
+                    padding: EdgeInsets.all(8.0),
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.outline,
+                      borderRadius: BorderRadius.circular(8.0),
+                      border: Border.all(
+                        color: Theme.of(context).colorScheme.onPrimary,
+                      ),
+                    ),
+                    child: SingleChildScrollView(
+                      child: SelectableText(  // Use SelectableText for better UX
+                        expected,
+                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                          fontFamily: 'monospace', // Better for JSON display
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                if(tabIndex == 1) const SizedBox(height: 16.0),
+                if(tabIndex == 1) Text(
+                  'Found',
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
+                if(tabIndex == 1) const SizedBox(height: 8.0),
                 Flexible(
                   child: Container(
                     padding: EdgeInsets.all(8.0),
@@ -172,7 +266,7 @@ class _ResponseContainerState extends State<ResponseContainer> {
                   ),
                 ),
                 const SizedBox(height: 8.0),
-                Row(
+                if(tabIndex == 0) Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     ElevatedButton(
@@ -212,7 +306,7 @@ class _ResponseContainerState extends State<ResponseContainer> {
                     )
 
                   ],
-                )
+                ),
               ],
             );
           }

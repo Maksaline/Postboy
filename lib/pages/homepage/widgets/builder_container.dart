@@ -377,7 +377,7 @@ class _BuilderContainerState extends State<BuilderContainer> {
                             )
                           ],
                         ),
-                        SizedBox(height: 16.0),
+                        const SizedBox(height: 16.0),
                         Container(
                           padding: EdgeInsets.all(4.0),
                           width: double.infinity,
