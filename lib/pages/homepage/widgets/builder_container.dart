@@ -331,7 +331,11 @@ class _BuilderContainerState extends State<BuilderContainer> {
                                         SnackBar(content: Text('Please enter a valid URL')),
                                       );
                                     } else {
-                                      context.read<ResponseCubit>().loadResponse(value.trim(), requestType);
+                                      context.read<ResponseCubit>().loadResponse(urlController.text.toString().trim(), requestType,
+                                        bodyMap: (jsonBodyMap.isNotEmpty && bodyNeeded) ? jsonBodyMap : null,
+                                        authToken: (authToken.isNotEmpty && authNeeded) ? authToken : null,
+                                        expectedMap: (expectedOutputMap.isNotEmpty && expectOutput) ? expectedOutputMap : null,
+                                      );
                                     }
                                   },
                                   validator: (value) {

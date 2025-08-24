@@ -56,28 +56,35 @@ class ResponseCubit extends Cubit<ResponseState> {
       final end = DateTime.now();
 
       int verdict = 0;
-      Set<String> keysChecked = {};
+      Map<int, int> keysChecked = {};
 
       if(expectedMap != null && expectedMap.isNotEmpty) {
         for(var map in expectedMap.entries) {
+          int i = 0;
           if(response.data is List) {
-            for(int i=0; i<response.data.length; i++) {
+            for(i=0; i<response.data.length; i++) {
               if(response.data[i] != null && response.data[i][map.key] != null) {
                 if(map.value == "<<<Anything>>>" || response.data[i][map.key].toString() == map.value.toString()) {
-                  keysChecked.add(map.key);
+                  keysChecked[i] = keysChecked[i] != null ? keysChecked[i]! + 1 : 1;
                 }
               }
             }
           } else {
             if(response.data != null && response.data[map.key] != null) {
               if(map.value == "<<<Anything>>>" || response.data[map.key].toString() == map.value.toString()) {
-                keysChecked.add(map.key);
+                keysChecked[i] = keysChecked[i] != null ? keysChecked[i]! + 1 : 1;
               }
             }
           }
         }
       }
-      if(keysChecked.length == expectedMap?.length) {
+      int max = 0;
+      keysChecked.forEach((key, value) {
+        if(value > max) {
+          max = value;
+        }
+      });
+      if(max == expectedMap?.length) {
         verdict = 1;
       } else {
         verdict = 2;
@@ -85,7 +92,6 @@ class ResponseCubit extends Cubit<ResponseState> {
       if(expectedMap == null || expectedMap.isEmpty) {
         verdict = 0;
       }
-      print('VERDICT: $verdict');
 
       const JsonEncoder encoder = JsonEncoder.withIndent('    ');
       String formattedBody = encoder.convert(response.data);
