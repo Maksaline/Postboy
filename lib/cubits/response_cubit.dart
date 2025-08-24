@@ -62,7 +62,6 @@ class ResponseCubit extends Cubit<ResponseState> {
         for(var map in expectedMap.entries) {
           if(response.data is List) {
             for(int i=0; i<response.data.length; i++) {
-              print(response.data[i]);
               if(response.data[i] != null && response.data[i][map.key] != null) {
                 if(map.value == null || response.data[i][map.key].toString() == map.value.toString()) {
                   found = true;
