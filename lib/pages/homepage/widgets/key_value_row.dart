@@ -16,7 +16,7 @@ class KeyValueRow extends StatelessWidget {
   final String? selectedOption;
   final TextEditingController? lowerController;
   final TextEditingController? upperController;
-  final VoidCallback? onOkPressed;
+  final Function(BuildContext)? onOkPressed;
   final ValueChanged<String?>? onTypeChanged;
   final ValueChanged<String?>? onOptionChanged;
 
@@ -196,7 +196,7 @@ class KeyValueRow extends StatelessWidget {
                                 child: Text('Cancel', style: Theme.of(context).textTheme.labelLarge,),
                               ),
                               ElevatedButton(
-                                onPressed: onOkPressed,
+                                onPressed: () => onOkPressed!(context),
                                 child: Text('Ok'),
                               ),
                             ],

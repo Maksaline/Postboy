@@ -92,7 +92,7 @@ class _ResponseContainerState extends State<ResponseContainer> {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if(state.verdict != 0) Container(
+                if(state.verdict != 0 && state.verdict != null) Container(
                   padding: EdgeInsets.all(4.0),
                   width: double.infinity,
                   height: 50,

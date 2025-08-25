@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:minimalist_api_tester/cubits/theme_cubit.dart';
 import 'package:minimalist_api_tester/pages/homepage/widgets/key_value_pair.dart';
@@ -23,15 +24,17 @@ class _BuilderContainerState extends State<BuilderContainer> {
   bool bodyNeeded = false;
   bool authNeeded = false;
   bool expectOutput = false;
+  bool automationOn = false;
   Map<String, dynamic> jsonBodyMap = {};
   Map<String, dynamic> expectedOutputMap = {};
+  Map<String, dynamic> automationMap = {};
   final TextEditingController urlController = TextEditingController();
+  final TextEditingController countController = TextEditingController();
   final tabs = ['Params', 'Body', 'JSON', 'Authentication'];
   final key = GlobalKey<FormState>();
   List<KeyValuePair> paramsPairs = [];
   List<KeyValuePair> bodyPairs = [];
   List<KeyValuePair> expectedPairs = [];
-  List<KeyValuePair> automationPairs = [];
 
   //----- Query Parameters' function start -----//
   void addParamsPair() {
@@ -222,14 +225,50 @@ class _BuilderContainerState extends State<BuilderContainer> {
   //----- Automation Handlers -----//
   void onTypeChanged(int index, String newType) {
     setState(() {
-      automationPairs[index].selectedType = newType;
+      bodyPairs[index].selectedType = newType;
     });
   }
 
   void onOptionChanged(int index, String newOption) {
     setState(() {
-      automationPairs[index].selectedOption = newOption;
+      bodyPairs[index].selectedOption = newOption;
     });
+  }
+
+  void onSavePressed(BuildContext context, int index) {
+    if(bodyPairs[index].keyController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Please enter a key First')),
+      );
+      return;
+    }
+
+    if(bodyPairs[index].lowerController.text.isEmpty || bodyPairs[index].upperController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Please enter a range for automation')),
+      );
+      return;
+    }
+    String newType = bodyPairs[index].selectedType;
+    String newOption = bodyPairs[index].selectedOption;
+    int? lower = bodyPairs[index].lowerController.text.isEmpty ? null : int.tryParse(bodyPairs[index].lowerController.text);
+    int? upper = bodyPairs[index].upperController.text.isEmpty ? null : int.tryParse(bodyPairs[index].upperController.text);
+
+    Map<String, dynamic> newPair = {
+      'type': newType,
+      'option': newOption,
+      'lower': lower,
+      'upper': upper,
+    };
+
+
+    setState(() {
+      automationMap[bodyPairs[index].keyController.text.trim()] = newPair;
+      bodyPairs[index].valueController.text = '<<<Automation>>>';
+    });
+    buildJsonBody();
+
+    Navigator.of(context).pop();
   }
 
   @override
@@ -350,6 +389,8 @@ class _BuilderContainerState extends State<BuilderContainer> {
                                         bodyMap: (jsonBodyMap.isNotEmpty && bodyNeeded) ? jsonBodyMap : null,
                                         authToken: (authToken.isNotEmpty && authNeeded) ? authToken : null,
                                         expectedMap: (expectedOutputMap.isNotEmpty && expectOutput) ? expectedOutputMap : null,
+                                        automationMap: (automationMap.isNotEmpty) ? automationMap : null,
+                                        count: (automationOn && countController.text.isNotEmpty) ? int.tryParse(countController.text) : null,
                                       );
                                     }
                                   },
@@ -376,6 +417,8 @@ class _BuilderContainerState extends State<BuilderContainer> {
                                     bodyMap: (jsonBodyMap.isNotEmpty && bodyNeeded) ? jsonBodyMap : null,
                                     authToken: (authToken.isNotEmpty && authNeeded) ? authToken : null,
                                     expectedMap: (expectedOutputMap.isNotEmpty && expectOutput) ? expectedOutputMap : null,
+                                    automationMap: (automationMap.isNotEmpty) ? automationMap : null,
+                                    count: (automationOn && countController.text.isNotEmpty) ? int.tryParse(countController.text) : null,
                                   );
                                 } else {
                                   ScaffoldMessenger.of(context).showSnackBar(
@@ -617,6 +660,40 @@ class _BuilderContainerState extends State<BuilderContainer> {
                 style: Theme.of(context).textTheme.bodyMedium),
             const SizedBox(height: 16.0),
             Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Checkbox(
+                  value: automationOn,
+                  onChanged: (value) {
+                    setState(() {
+                      automationOn = value ?? false;
+                    });
+                  },
+                ),
+                SizedBox(width: 8.0),
+                Text('Run  ', style: Theme.of(context).textTheme.labelLarge),
+                SizedBox(
+                  width: 40,
+                  height: 30,
+                  child: TextFormField(
+                    controller: countController,
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly, // Only digits 0-9
+                    ],
+                    decoration: InputDecoration(
+                      contentPadding: EdgeInsets.all(4.0),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                    ),
+                  ),
+                ),
+                Text('  times', style: Theme.of(context).textTheme.labelLarge),
+              ],
+            ),
+            const SizedBox(height: 8.0),
+            Row(
               children: [
                 Expanded(
                   flex: 3,
@@ -662,8 +739,9 @@ class _BuilderContainerState extends State<BuilderContainer> {
                     onOptionChanged: (value) => onOptionChanged(index, value!),
                     selectedOption: pair.selectedOption,
                     selectedType: pair.selectedType,
-                    lowerController: pair.keyController,
-                    upperController: pair.valueController,
+                    lowerController: pair.lowerController,
+                    upperController: pair.upperController,
+                    onOkPressed: (context) => onSavePressed(context, index),
                   );
                 }),
                 Padding(
