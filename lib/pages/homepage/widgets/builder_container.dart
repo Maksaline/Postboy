@@ -31,6 +31,7 @@ class _BuilderContainerState extends State<BuilderContainer> {
   List<KeyValuePair> paramsPairs = [];
   List<KeyValuePair> bodyPairs = [];
   List<KeyValuePair> expectedPairs = [];
+  List<KeyValuePair> automationPairs = [];
 
   //----- Query Parameters' function start -----//
   void addParamsPair() {
@@ -216,6 +217,20 @@ class _BuilderContainerState extends State<BuilderContainer> {
     }
   }
   //----- Expected Output Parameters' function end -----//
+
+
+  //----- Automation Handlers -----//
+  void onTypeChanged(int index, String newType) {
+    setState(() {
+      automationPairs[index].selectedType = newType;
+    });
+  }
+
+  void onOptionChanged(int index, String newOption) {
+    setState(() {
+      automationPairs[index].selectedOption = newOption;
+    });
+  }
 
   @override
   void initState() {
@@ -642,6 +657,13 @@ class _BuilderContainerState extends State<BuilderContainer> {
                     onValueChanged: (value) => buildJsonBody(),
                     onKeySubmitted: (value) => buildJsonBody(),
                     onValueSubmitted: (value) => buildJsonBody(),
+                    advance: true,
+                    onTypeChanged: (value) => onTypeChanged(index, value!),
+                    onOptionChanged: (value) => onOptionChanged(index, value!),
+                    selectedOption: pair.selectedOption,
+                    selectedType: pair.selectedType,
+                    lowerController: pair.keyController,
+                    upperController: pair.valueController,
                   );
                 }),
                 Padding(
