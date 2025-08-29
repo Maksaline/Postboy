@@ -24,59 +24,70 @@ class _ResponseContainerState extends State<ResponseContainer> {
   }
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          width: double.infinity,
-          padding: const EdgeInsets.all(16.0),
-          decoration: BoxDecoration(
-            border: Border(
-              bottom: BorderSide(
-                color: Theme.of(context).colorScheme.onPrimary,
-                width: 1.0,
+    return BlocListener<ResponseCubit, ResponseState>(
+      listener: (context, state) {
+        if(state is ResponseLoaded) {
+          if(state.verdict == null || state.verdict == 0) {
+            setState(() {
+              tabIndex = 0;
+            });
+          }
+        }
+      },
+      child: Column(
+        children: [
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(16.0),
+            decoration: BoxDecoration(
+              border: Border(
+                bottom: BorderSide(
+                  color: Theme.of(context).colorScheme.onPrimary,
+                  width: 1.0,
+                ),
               ),
             ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(Icons.receipt_long_rounded, color: Theme.of(context).colorScheme.onPrimary),
+                    const SizedBox(width: 8.0),
+                    Text(
+                      'Response',
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8.0),
+                Text(
+                  'View the response from your API request here. This section will display the status code, headers, and body of the response.',
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+              ],
+            )
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Icon(Icons.receipt_long_rounded, color: Theme.of(context).colorScheme.onPrimary),
-                  const SizedBox(width: 8.0),
-                  Text(
-                    'Response',
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
-                ],
-              ),
-              const SizedBox(height: 8.0),
-              Text(
-                'View the response from your API request here. This section will display the status code, headers, and body of the response.',
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-            ],
-          )
-        ),
-        Expanded(
-          child: BlocBuilder<ResponseCubit, ResponseState>(
-              builder: (context, state) {
-                if( state is ResponseInitial) {
-                  return initialResponse(context);
-                } else
-                if (state is ResponseLoading) {
-                  return loadingResponse();
-                } else if (state is ResponseLoaded) {
-                  return loadedResponse(state, context);
-                } else if (state is ResponseFailure) {
-                  return errorResponse(context);
+          Expanded(
+            child: BlocBuilder<ResponseCubit, ResponseState>(
+                builder: (context, state) {
+                  if( state is ResponseInitial) {
+                    return initialResponse(context);
+                  } else
+                  if (state is ResponseLoading) {
+                    return loadingResponse();
+                  } else if (state is ResponseLoaded) {
+                    return loadedResponse(state, context);
+                  } else if (state is ResponseFailure) {
+                    return errorResponse(context);
+                  }
+                  return const SizedBox.shrink();
                 }
-                return const SizedBox.shrink();
-              }
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -357,12 +368,12 @@ class _ResponseContainerState extends State<ResponseContainer> {
             Icon(Icons.error, color: ThemeCubit.errorRed.withAlpha(95), size: 64.0),
             const SizedBox(height: 16.0),
             Text(
-              'Invalid Url',
+              'Invalid Url or Body',
               style: Theme.of(context).textTheme.bodyLarge,
             ),
             const SizedBox(height: 8.0),
             Text(
-              'The URL you entered is invalid. Please check the URL and try again.',
+              'The URL or body you entered is invalid. Please check the URL and try again.',
               style: Theme.of(context).textTheme.bodyMedium,
               textAlign: TextAlign.center,
             ),
