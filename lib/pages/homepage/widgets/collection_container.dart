@@ -90,7 +90,13 @@ class _CollectionContainerState extends State<CollectionContainer> {
                     itemCount: 1, // Example item count
                     itemBuilder: (context, index) {
                       return ListTile(
-                        title: Text('New Request'),
+                        title: Row(
+                          children: [
+                            Text('GET', style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.green),),
+                            SizedBox(width: 16.0),
+                            Text('New Request'),
+                          ],
+                        ),
                         onTap: () {
                           // Handle collection tap
                         },
