@@ -68,7 +68,7 @@ class _CollectionContainerState extends State<CollectionContainer> {
                   IconButton(
                     icon: Icon(Icons.add, color: theme.colorScheme.primary),
                     onPressed: () {
-                      // Handle add collection action
+
                     },
                   ),
                 ],
@@ -98,7 +98,7 @@ class _CollectionContainerState extends State<CollectionContainer> {
                           ],
                         ),
                         onTap: () {
-                          // Handle collection tap
+
                         },
                       );
                     },
