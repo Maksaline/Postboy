@@ -128,6 +128,7 @@ class _BuilderContainerState extends State<BuilderContainer> {
       bodyPairs[index].keyController.clear();
       bodyPairs[index].valueController.clear();
     });
+    buildJsonBody();
   }
 
   void deleteBodyParamsPair(int index) {
@@ -138,6 +139,7 @@ class _BuilderContainerState extends State<BuilderContainer> {
       bodyPairs[index].valueController.dispose();
       bodyPairs.removeAt(index);
     });
+    buildJsonBody();
   }
 
   void buildJsonBody() {
