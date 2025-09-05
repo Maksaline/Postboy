@@ -240,7 +240,13 @@ class _BuilderContainerState extends State<BuilderContainer> {
   void onSavePressed(BuildContext context, int index) {
     if(bodyPairs[index].keyController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please enter a key First')),
+        SnackBar(content: Row(
+          children: [
+            Icon(Icons.warning),
+            SizedBox(width: 8.0),
+            Text('Please enter a key First'),
+          ],
+        )),
       );
       return;
     }
