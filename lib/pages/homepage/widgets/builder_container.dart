@@ -838,7 +838,57 @@ class _BuilderContainerState extends State<BuilderContainer> {
               maxLines: null,
               decoration: InputDecoration(),
             ),
-          )
+          ),
+          const SizedBox(height: 8.0),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Theme.of(context).colorScheme.outline,
+                ),
+                onPressed: () {
+                  // Handle save response action
+
+                },
+                child: Row(
+                  children: [
+                    Icon(Icons.format_align_left, size: 16.0),
+                    const SizedBox(width: 4.0),
+                    Text('Format'),
+                  ],
+                ),
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Theme.of(context).colorScheme.outline,
+                ),
+                onPressed: () {
+                  // Handle copy response action
+                  Clipboard.setData(ClipboardData(text: jsonBody));
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Row(
+                          children: [
+                            Icon(Icons.check_circle, color: Colors.green),
+                            SizedBox(width: 8.0),
+                            Text('JSON copied to clipboard'),
+                          ],
+                        )
+                      )
+                  );
+                },
+                child: Row(
+                  children: [
+                    Icon(Icons.copy, size: 16.0),
+                    const SizedBox(width: 4.0),
+                    Text('Copy'),
+                  ],
+                ),
+              )
+
+            ],
+          ),
         ],
       );
   }

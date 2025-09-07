@@ -304,7 +304,15 @@ class _ResponseContainerState extends State<ResponseContainer> {
                         // Handle copy response action
                         Clipboard.setData(ClipboardData(text: state.body));
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Response copied to clipboard'))
+                          SnackBar(content:
+                            Row(
+                              children: [
+                                Icon(Icons.check_circle, color: Colors.green),
+                                SizedBox(width: 8.0),
+                                Text('Response copied to clipboard'),
+                              ],
+                            )
+                          )
                         );
                       },
                       child: Row(
