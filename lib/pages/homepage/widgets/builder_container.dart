@@ -30,6 +30,7 @@ class _BuilderContainerState extends State<BuilderContainer> {
   Map<String, dynamic> automationMap = {};
   final TextEditingController urlController = TextEditingController();
   final TextEditingController countController = TextEditingController();
+  final TextEditingController jsonController = TextEditingController();
   final tabs = ['Params', 'Body', 'JSON', 'Authentication'];
   final key = GlobalKey<FormState>();
   List<KeyValuePair> paramsPairs = [];
@@ -166,7 +167,8 @@ class _BuilderContainerState extends State<BuilderContainer> {
     }
 
     setState(() {
-      jsonBody = jsonBodyMap.isNotEmpty ? JsonEncoder.withIndent('    ').convert(jsonBodyMap) : '';
+      jsonBody = jsonBodyMap.isNotEmpty ? JsonEncoder.withIndent('    ').convert(jsonBodyMap) : '{\n\n}';
+      jsonController.text = jsonBody;
     });
   }
   //----- Body Parameters' function end -----//
@@ -809,27 +811,33 @@ class _BuilderContainerState extends State<BuilderContainer> {
           Text('JSON body will be generated based on the key-value pairs you provide. ',
               style: Theme.of(context).textTheme.bodyMedium),
           const SizedBox(height: 16.0),
-          Flexible(
-            child: Container(
-              padding: EdgeInsets.all(8.0),
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.outline,
-                borderRadius: BorderRadius.circular(8.0),
-                border: Border.all(
-                  color: Theme.of(context).colorScheme.onPrimary,
-                ),
-              ),
-              child: SingleChildScrollView(
-                child: SelectableText(  // Use SelectableText for better UX
-                  jsonBody.isEmpty ? 'Add Parameters from the Body section' : jsonBody,
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    fontFamily: 'monospace', // Better for JSON display
-                  ),
-                ),
-              ),
-            ),
-          ),
+          // Flexible(
+          //   child: Container(
+          //     padding: EdgeInsets.all(8.0),
+          //     width: double.infinity,
+          //     decoration: BoxDecoration(
+          //       color: Theme.of(context).colorScheme.outline,
+          //       borderRadius: BorderRadius.circular(8.0),
+          //       border: Border.all(
+          //         color: Theme.of(context).colorScheme.onPrimary,
+          //       ),
+          //     ),
+          //     child: SingleChildScrollView(
+          //       child: SelectableText(  // Use SelectableText for better UX
+          //         jsonBody.isEmpty ? 'Add Parameters from the Body section' : jsonBody,
+          //         style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+          //           fontFamily: 'monospace', // Better for JSON display
+          //         ),
+          //       ),
+          //     ),
+          //   ),
+          // ),
+          TextFormField(
+            controller: jsonController,
+            minLines: 1,
+            maxLines: 12,
+            decoration: InputDecoration(),
+          )
         ],
       );
   }
