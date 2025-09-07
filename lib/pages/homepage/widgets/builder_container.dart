@@ -174,6 +174,35 @@ class _BuilderContainerState extends State<BuilderContainer> {
   //----- Body Parameters' function end -----//
 
 
+  //----- JSON function start -----//
+  void buildJSONMap(String jsonText) {
+    try {
+      Map<String, dynamic> parsedJson = json.decode(jsonText);
+      setState(() {
+        jsonBodyMap = parsedJson;
+      });
+    } catch (e) {
+      return;
+    }
+    bodyPairs.clear();
+    jsonBodyMap.forEach((key, value) {
+      KeyValuePair pair = KeyValuePair();
+      pair.keyController.text = key;
+      if(value == null) {
+        pair.valueController.text = 'null';
+      } else if(value is bool) {
+        pair.valueController.text = value.toString();
+      } else {
+        pair.valueController.text = value.toString();
+      }
+      bodyPairs.add(pair);
+    });
+  }
+
+
+  //----- JSON function start -----//
+
+
   //----- Expected Output Parameters' function start -----//
   void addExpectedOutputParamsPair() {
     setState(() {
@@ -811,32 +840,13 @@ class _BuilderContainerState extends State<BuilderContainer> {
           Text('JSON body will be generated based on the key-value pairs you provide. ',
               style: Theme.of(context).textTheme.bodyMedium),
           const SizedBox(height: 16.0),
-          // Flexible(
-          //   child: Container(
-          //     padding: EdgeInsets.all(8.0),
-          //     width: double.infinity,
-          //     decoration: BoxDecoration(
-          //       color: Theme.of(context).colorScheme.outline,
-          //       borderRadius: BorderRadius.circular(8.0),
-          //       border: Border.all(
-          //         color: Theme.of(context).colorScheme.onPrimary,
-          //       ),
-          //     ),
-          //     child: SingleChildScrollView(
-          //       child: SelectableText(  // Use SelectableText for better UX
-          //         jsonBody.isEmpty ? 'Add Parameters from the Body section' : jsonBody,
-          //         style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-          //           fontFamily: 'monospace', // Better for JSON display
-          //         ),
-          //       ),
-          //     ),
-          //   ),
-          // ),
-          Expanded(
+          Flexible(
             child: TextFormField(
               controller: jsonController,
               maxLines: null,
               decoration: InputDecoration(),
+              onChanged: (value) => buildJSONMap(value),
+              onFieldSubmitted: (value) => buildJSONMap(value),
             ),
           ),
           const SizedBox(height: 8.0),
