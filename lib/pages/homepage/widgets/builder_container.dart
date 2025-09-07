@@ -832,11 +832,12 @@ class _BuilderContainerState extends State<BuilderContainer> {
           //     ),
           //   ),
           // ),
-          TextFormField(
-            controller: jsonController,
-            minLines: 1,
-            maxLines: 12,
-            decoration: InputDecoration(),
+          Expanded(
+            child: TextFormField(
+              controller: jsonController,
+              maxLines: null,
+              decoration: InputDecoration(),
+            ),
           )
         ],
       );
