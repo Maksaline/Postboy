@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:minimalist_api_tester/cubits/collection_cubit.dart';
 import 'package:minimalist_api_tester/cubits/response_cubit.dart';
 import 'package:minimalist_api_tester/cubits/theme_cubit.dart';
 import 'package:minimalist_api_tester/pages/homepage/homepage.dart';
@@ -44,6 +45,7 @@ class MyApp extends StatelessWidget {
         return MultiBlocProvider(
           providers: [
             BlocProvider(create: (context) => ResponseCubit()),
+            BlocProvider(create: (context) => CollectionCubit()),
           ],
           child: MaterialApp(
             title: 'Postboy Pro',
