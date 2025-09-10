@@ -349,34 +349,34 @@ class _BuilderContainerState extends State<BuilderContainer> {
                   ),
                   child: Row(
                     children: [
-                      EditableTitleWidget(
-                        initialTitle: title,
-                        onTitleChanged: (newTitle) {
-                          setState(() {
-                            title = newTitle;
-                          });
-                        },
-                      ),
-                      // Flexible(
-                      //   child: EditableText(
-                      //     controller: TextEditingController(text: title),
-                      //     focusNode: FocusNode(),
-                      //     style: Theme.of(context).textTheme.titleLarge!,
-                      //     cursorColor: Theme.of(context).colorScheme.primary,
-                      //     backgroundCursorColor: Colors.transparent,
-                      //     onSubmitted: (newValue) {
-                      //       if(newValue.isEmpty) {
-                      //         ScaffoldMessenger.of(context).showSnackBar(
-                      //           SnackBar(content: Text('Title cannot be empty')),
-                      //         );
-                      //       } else {
-                      //         setState(() {
-                      //           title = newValue;
-                      //         });
-                      //       }
-                      //     },
-                      //   ),
+                      // EditableTitleWidget(
+                      //   initialTitle: title,
+                      //   onTitleChanged: (newTitle) {
+                      //     setState(() {
+                      //       title = newTitle;
+                      //     });
+                      //   },
                       // ),
+                      Flexible(
+                        child: EditableText(
+                          controller: TextEditingController(text: title),
+                          focusNode: FocusNode(),
+                          style: Theme.of(context).textTheme.titleLarge!,
+                          cursorColor: Theme.of(context).colorScheme.primary,
+                          backgroundCursorColor: Colors.transparent,
+                          onSubmitted: (newValue) {
+                            if(newValue.isEmpty) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text('Title cannot be empty')),
+                              );
+                            } else {
+                              setState(() {
+                                title = newValue;
+                              });
+                            }
+                          },
+                        ),
+                      ),
                       // const SizedBox(width: 8,),
                       // IconButton(
                       //   onPressed: () {
