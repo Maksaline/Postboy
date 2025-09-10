@@ -67,13 +67,16 @@ class _EditableTitleWidgetState extends State<EditableTitleWidget> {
       child: Row(
         children: [
           Expanded(
-            child: _isEditing ? _buildEditingWidget() : _buildDisplayWidget(),
-          ),
-          if (!_isEditing)
-            IconButton(
-              icon: const Icon(Icons.edit),
-              onPressed: _startEditing,
+            child: GestureDetector(
+              onTap: _startEditing,
+              child: _isEditing ? _buildEditingWidget() : _buildDisplayWidget(),
             ),
+          ),
+          // if (!_isEditing)
+          //   IconButton(
+          //     icon: const Icon(Icons.edit),
+          //     onPressed: _startEditing,
+          //   ),
           if (_isEditing) ...[
             IconButton(
               icon: const Icon(Icons.check, color: Colors.green),
@@ -103,15 +106,15 @@ class _EditableTitleWidgetState extends State<EditableTitleWidget> {
         controller: _controller,
         autofocus: true,
         style: Theme.of(context).textTheme.titleLarge,
-        decoration: const InputDecoration(
-          border: OutlineInputBorder(),
-          enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.white54),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.blue),
-          ),
-          contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        decoration: InputDecoration(
+          border: InputBorder.none,
+          enabledBorder: InputBorder.none,
+          focusedBorder: InputBorder.none,
+          errorBorder: InputBorder.none,
+          focusedErrorBorder: InputBorder.none,
+          contentPadding: EdgeInsets.zero,
+          isDense: true,
+          fillColor: Theme.of(context).colorScheme.outline,
         ),
         validator: (value) {
           if (value == null || value.trim().isEmpty) {

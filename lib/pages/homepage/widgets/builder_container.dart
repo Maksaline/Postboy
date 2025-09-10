@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:minimalist_api_tester/cubits/theme_cubit.dart';
+import 'package:minimalist_api_tester/pages/homepage/widgets/editable_title_widget.dart';
 import 'package:minimalist_api_tester/pages/homepage/widgets/key_value_pair.dart';
 
 import '../../../cubits/response_cubit.dart';
@@ -348,26 +349,34 @@ class _BuilderContainerState extends State<BuilderContainer> {
                   ),
                   child: Row(
                     children: [
-                      Flexible(
-                        child: EditableText(
-                          controller: TextEditingController(text: title),
-                          focusNode: FocusNode(),
-                          style: Theme.of(context).textTheme.titleLarge!,
-                          cursorColor: Theme.of(context).colorScheme.primary,
-                          backgroundCursorColor: Colors.transparent,
-                          onSubmitted: (newValue) {
-                            if(newValue.isEmpty) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text('Title cannot be empty')),
-                              );
-                            } else {
-                              setState(() {
-                                title = newValue;
-                              });
-                            }
-                          },
-                        ),
+                      EditableTitleWidget(
+                        initialTitle: title,
+                        onTitleChanged: (newTitle) {
+                          setState(() {
+                            title = newTitle;
+                          });
+                        },
                       ),
+                      // Flexible(
+                      //   child: EditableText(
+                      //     controller: TextEditingController(text: title),
+                      //     focusNode: FocusNode(),
+                      //     style: Theme.of(context).textTheme.titleLarge!,
+                      //     cursorColor: Theme.of(context).colorScheme.primary,
+                      //     backgroundCursorColor: Colors.transparent,
+                      //     onSubmitted: (newValue) {
+                      //       if(newValue.isEmpty) {
+                      //         ScaffoldMessenger.of(context).showSnackBar(
+                      //           SnackBar(content: Text('Title cannot be empty')),
+                      //         );
+                      //       } else {
+                      //         setState(() {
+                      //           title = newValue;
+                      //         });
+                      //       }
+                      //     },
+                      //   ),
+                      // ),
                       // const SizedBox(width: 8,),
                       // IconButton(
                       //   onPressed: () {
