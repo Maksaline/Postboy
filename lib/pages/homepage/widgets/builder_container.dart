@@ -20,6 +20,7 @@ class _BuilderContainerState extends State<BuilderContainer> {
   String requestType = 'GET';
   String jsonBody = '';
   String authToken = '';
+  String title = 'New Request';
   int tabIndex = 0;
   bool bodyNeeded = false;
   bool authNeeded = false;
@@ -347,17 +348,33 @@ class _BuilderContainerState extends State<BuilderContainer> {
                   ),
                   child: Row(
                     children: [
-                      Text(
-                        'New Request',
-                        style: Theme.of(context).textTheme.titleLarge,
+                      Flexible(
+                        child: EditableText(
+                          controller: TextEditingController(text: title),
+                          focusNode: FocusNode(),
+                          style: Theme.of(context).textTheme.titleLarge!,
+                          cursorColor: Theme.of(context).colorScheme.primary,
+                          backgroundCursorColor: Colors.transparent,
+                          onSubmitted: (newValue) {
+                            if(newValue.isEmpty) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text('Title cannot be empty')),
+                              );
+                            } else {
+                              setState(() {
+                                title = newValue;
+                              });
+                            }
+                          },
+                        ),
                       ),
-                      const SizedBox(width: 8,),
-                      IconButton(
-                        onPressed: () {
-                          // Handle new request action
-                        },
-                        icon: Icon(Icons.edit, color: Theme.of(context).colorScheme.onPrimary),
-                      ),
+                      // const SizedBox(width: 8,),
+                      // IconButton(
+                      //   onPressed: () {
+                      //     // Handle new request action
+                      //   },
+                      //   icon: Icon(Icons.edit, color: Theme.of(context).colorScheme.onPrimary),
+                      // ),
                       const Spacer(),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
