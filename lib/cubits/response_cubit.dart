@@ -82,6 +82,7 @@ class ResponseCubit extends Cubit<ResponseState> {
               } else if (val['type'] == 'String') {
                 if (val['option'] == 'Random') {
                   int length = lower + rand.nextInt(upper - lower + 1);
+                  length = length > 20 ? 20 : length < 1 ? 1 : length;
                   newValue = NameGenerator.generateRandomName(length);
                 } else {
                   int length = min(lower + i, upper);
@@ -116,7 +117,7 @@ class ResponseCubit extends Cubit<ResponseState> {
             }
 
             newRes['${i + 1}-StatusCode'] =
-                '${response.statusCode} ${response.statusMessage}' ?? 0;
+                '${response.statusCode} ${response.statusMessage}';
             responses.add(newRes);
           } catch (e) {
             emit(ResponseFailure(message: e.toString()));
