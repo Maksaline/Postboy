@@ -41,6 +41,8 @@ class KeyValueRow extends StatelessWidget {
     this.onOptionChanged,
   });
 
+
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -75,6 +77,11 @@ class KeyValueRow extends StatelessWidget {
                       controller: valueController,
                       onChanged: onValueChanged,
                       onFieldSubmitted: onValueSubmitted,
+                      style: TextStyle(
+                        color: valueController.text == '<<<Automation>>>'
+                            ? Theme.of(context).colorScheme.primary
+                            : Theme.of(context).colorScheme.onSecondary,
+                      ),
                       decoration: InputDecoration(
                         hintText: 'Value',
                         border: InputBorder.none,
