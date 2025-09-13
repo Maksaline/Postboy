@@ -101,8 +101,7 @@ class ResponseCubit extends Cubit<ResponseState> {
             newData[key] = newValue;
             newRes['${i + 1}-$key'] = newValue;
           });
-          // print(i+1);
-          // print(newData);
+
           try {
             if (method == 'GET') {
               response = await dio.get(url, data: newData, options: options);

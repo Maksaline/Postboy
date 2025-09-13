@@ -22,6 +22,7 @@ class _BuilderContainerState extends State<BuilderContainer> {
   String authToken = '';
   String title = 'New Request';
   int tabIndex = 0;
+  int collectionIndex = 0;
   bool bodyNeeded = false;
   bool authNeeded = false;
   bool expectOutput = false;
@@ -256,7 +257,7 @@ class _BuilderContainerState extends State<BuilderContainer> {
   //----- Expected Output Parameters' function end -----//
 
 
-  //----- Automation Handlers -----//
+  //----- Automation Handlers start-----//
   void onTypeChanged(int index, String newType) {
     setState(() {
       bodyPairs[index].selectedType = newType;
@@ -310,6 +311,7 @@ class _BuilderContainerState extends State<BuilderContainer> {
 
     Navigator.of(context).pop();
   }
+  //----- Automation Handlers end-----//
 
   @override
   void initState() {
