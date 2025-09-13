@@ -3,7 +3,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:minimalist_api_tester/cubits/collection_cubit.dart';
 import 'package:minimalist_api_tester/cubits/theme_cubit.dart';
+import 'package:minimalist_api_tester/models/collection.dart';
 import 'package:minimalist_api_tester/pages/homepage/widgets/key_value_pair.dart';
 
 import '../../../cubits/response_cubit.dart';
@@ -313,6 +315,14 @@ class _BuilderContainerState extends State<BuilderContainer> {
   }
   //----- Automation Handlers end-----//
 
+  void requestBuilder(Collection collection) {
+    setState(() {
+      title = collection.name;
+      requestType = collection.method;
+      collectionIndex = collection.id;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -323,6 +333,33 @@ class _BuilderContainerState extends State<BuilderContainer> {
 
   @override
   Widget build(BuildContext context) {
+    return BlocListener<CollectionCubit, CollectionState>(
+  listener: (context, state) {
+    if (state is CollectionLoaded) {
+      if (state.index >= 0 && state.index < state.collections.length) {
+        requestBuilder(state.collections[state.index]);
+      }
+    }
+  },
+  child:
+  BlocSelector<CollectionCubit, CollectionState, Collection?>(
+  selector: (state) {
+    if (state is CollectionLoaded) {
+      if (state.index >= 0 && state.index < state.collections.length) {
+        return state.collections[state.index];
+      }
+    }
+    return null;
+  },
+  builder: (context, selectedCollection) {
+    if (selectedCollection == null) {
+      return Center(
+        child: Text(
+          'No Collection Selected',
+          style: Theme.of(context).textTheme.bodyLarge,
+        ),
+      );
+    }
     return Container(
       decoration: BoxDecoration(
         border: Border.symmetric(
@@ -371,6 +408,7 @@ class _BuilderContainerState extends State<BuilderContainer> {
                                 SnackBar(content: Text('Title cannot be empty')),
                               );
                             } else {
+                              context.read<CollectionCubit>().updateName(collectionIndex, newValue);
                               setState(() {
                                 title = newValue;
                               });
@@ -427,6 +465,7 @@ class _BuilderContainerState extends State<BuilderContainer> {
                                     setState(() {
                                       requestType = value.toString();
                                     });
+                                    context.read<CollectionCubit>().updateMethod(collectionIndex, value.toString());
                                   },
                                   value: requestType,
                                   items: const [
@@ -607,6 +646,9 @@ class _BuilderContainerState extends State<BuilderContainer> {
         }
       ),
     );
+  },
+),
+);
   }
 
   SingleChildScrollView paramsBuilder(BuildContext context) {

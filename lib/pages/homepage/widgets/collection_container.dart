@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:minimalist_api_tester/cubits/collection_cubit.dart';
+import 'package:minimalist_api_tester/models/collection.dart';
 
 import '../../../cubits/theme_cubit.dart';
 
@@ -11,6 +13,12 @@ class CollectionContainer extends StatefulWidget {
 }
 
 class _CollectionContainerState extends State<CollectionContainer> {
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<CollectionCubit>().addNewCollection();
+  }
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ThemeCubit, ThemeData>(
@@ -68,7 +76,7 @@ class _CollectionContainerState extends State<CollectionContainer> {
                   IconButton(
                     icon: Icon(Icons.add, color: theme.colorScheme.primary),
                     onPressed: () {
-
+                      context.read<CollectionCubit>().addNewCollection();
                     },
                   ),
                 ],
@@ -86,22 +94,71 @@ class _CollectionContainerState extends State<CollectionContainer> {
                         ),
                     ),
                   ),
-                  child: ListView.builder(
-                    itemCount: 1, // Example item count
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        title: Row(
-                          children: [
-                            Text('GET', style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.green),),
-                            SizedBox(width: 16.0),
-                            Text('New Request'),
-                          ],
-                        ),
-                        onTap: () {
-
-                        },
-                      );
-                    },
+                  child: BlocBuilder<CollectionCubit, CollectionState>(
+                    builder: (context, state) {
+                      if (state is CollectionLoaded) {
+                        List<Collection> collections = state.collections;
+                        if (collections.isEmpty) {
+                          return Center(
+                            child: Text('No Collections Found', style: Theme.of(context).textTheme.bodyMedium),
+                          );
+                        }
+                        return ListView.builder(
+                          itemCount: collections.length,
+                          itemBuilder: (context, index) {
+                            Color methodColor;
+                            switch (collections[index].method) {
+                              case 'GET':
+                                methodColor = Colors.green;
+                                break;
+                              case 'POST':
+                                methodColor = Colors.blue;
+                                break;
+                              case 'PUT':
+                                methodColor = Colors.orange;
+                                break;
+                              case 'DELETE':
+                                methodColor = Colors.red;
+                                break;
+                              case 'PATCH':
+                                methodColor = Colors.purple;
+                                break;
+                              case 'HEAD':
+                                methodColor = Colors.brown;
+                                break;
+                              case 'OPTIONS':
+                                methodColor = Colors.grey;
+                                break;
+                              default:
+                                methodColor = Colors.black;
+                            }
+                            return ListTile(
+                              title: Row(
+                                children: [
+                                  Text(collections[index].method, style: Theme
+                                      .of(context)
+                                      .textTheme
+                                      .titleMedium
+                                      ?.copyWith(color: methodColor),),
+                                  SizedBox(width: 16.0),
+                                  Text(
+                                      collections[index].name,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ],
+                              ),
+                              onTap: () {
+                                context.read<CollectionCubit>().updateIndex(index);
+                              },
+                            );
+                          },
+                        );
+                      } else {
+                        return Center(
+                          child: Text('No Collections Found', style: Theme.of(context).textTheme.bodyMedium),
+                        );
+                      }
+                    }
                   ),
                 ),
               ),

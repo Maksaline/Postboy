@@ -14,11 +14,11 @@ class CollectionCubit extends Cubit<CollectionState> {
   void addNewCollection() {
     emit(CollectionLoading());
     try {
-      index = collections.length;
+      int newIndex = collections.length;
       collections.add(
         Collection(
           name: 'New Request',
-          id: index,
+          id: newIndex,
           method: 'GET',
         )
       );
@@ -27,4 +27,31 @@ class CollectionCubit extends Cubit<CollectionState> {
       emit(CollectionFailure(message: e.toString()));
     }
   }
+
+  void loadCollections() {
+    emit(CollectionLoading());
+    try {
+      // Here you can load collections from a database or API if needed
+      emit(CollectionLoaded(collections: collections, index: index));
+    } catch (e) {
+      emit(CollectionFailure(message: e.toString()));
+    }
+  }
+
+  void updateIndex(int newIndex) {
+    index = newIndex;
+    emit(CollectionLoaded(collections: collections, index: index));
+  }
+
+  void updateName(int index, String newName) {
+    collections[index].name = newName;
+    emit(CollectionLoaded(collections: collections, index: this.index));
+  }
+
+  void updateMethod(int index, String newMethod) {
+    collections[index].method = newMethod;
+    emit(CollectionLoaded(collections: collections, index: this.index));
+  }
+
+
 }

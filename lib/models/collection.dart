@@ -1,6 +1,6 @@
 class Collection {
-  final String method;
-  final String name;
+  String method;
+  String name;
   String? url;
   Map<String, String>? headers;
   Map<String, String>? body;
