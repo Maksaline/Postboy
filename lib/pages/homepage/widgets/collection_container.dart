@@ -71,8 +71,14 @@ class _CollectionContainerState extends State<CollectionContainer> {
                 children: [
                   Icon(Icons.folder, color: theme.colorScheme.onPrimary),
                   SizedBox(width: 8.0),
-                  Text('Collections', style: Theme.of(context).textTheme.titleLarge),
-                  const Spacer(),
+                  Expanded(
+                      child: Text(
+                          'Collections',
+                          style: Theme.of(context).textTheme.titleLarge,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1
+                      )
+                  ),
                   IconButton(
                     icon: Icon(Icons.add, color: theme.colorScheme.primary),
                     onPressed: () {
