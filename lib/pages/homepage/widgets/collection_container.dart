@@ -141,9 +141,12 @@ class _CollectionContainerState extends State<CollectionContainer> {
                                       .titleMedium
                                       ?.copyWith(color: methodColor),),
                                   SizedBox(width: 16.0),
-                                  Text(
-                                      collections[index].name,
-                                    overflow: TextOverflow.ellipsis,
+                                  Expanded(
+                                    child: Text(
+                                        collections[index].name,
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                    ),
                                   ),
                                 ],
                               ),
