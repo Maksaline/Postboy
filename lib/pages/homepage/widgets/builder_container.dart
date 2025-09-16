@@ -323,6 +323,21 @@ class _BuilderContainerState extends State<BuilderContainer> {
     });
   }
 
+  void updateRequest() {
+    Collection updatedCollection = Collection(
+      name: title,
+      id: collectionIndex,
+      method: requestType,
+      url: urlController.text.trim(),
+      body: jsonBodyMap.isNotEmpty ? jsonBodyMap.map((key, value) => MapEntry(key, value.toString())) : null,
+      authToken: authNeeded && authToken.isNotEmpty ? authToken : null,
+      expected: expectOutput && expectedOutputMap.isNotEmpty ? expectedOutputMap.map((key, value) => MapEntry(key, value.toString())) : null,
+      automation: automationMap.isNotEmpty ? automationMap.map((key, value) => MapEntry(key, value)) : null,
+      count: automationOn && countController.text.isNotEmpty ? int.tryParse(countController.text) : null,
+    );
+    context.read<CollectionCubit>().updateCollection(collectionIndex, updatedCollection);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -408,10 +423,11 @@ class _BuilderContainerState extends State<BuilderContainer> {
                                 SnackBar(content: Text('Title cannot be empty')),
                               );
                             } else {
-                              context.read<CollectionCubit>().updateName(collectionIndex, newValue);
+                              // context.read<CollectionCubit>().updateName(collectionIndex, newValue);
                               setState(() {
                                 title = newValue;
                               });
+                              updateRequest();
                             }
                           },
                         ),
@@ -465,7 +481,8 @@ class _BuilderContainerState extends State<BuilderContainer> {
                                     setState(() {
                                       requestType = value.toString();
                                     });
-                                    context.read<CollectionCubit>().updateMethod(collectionIndex, value.toString());
+                                    // context.read<CollectionCubit>().updateMethod(collectionIndex, value.toString());
+                                    updateRequest();
                                   },
                                   value: requestType,
                                   items: const [

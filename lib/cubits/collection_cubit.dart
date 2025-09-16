@@ -53,5 +53,8 @@ class CollectionCubit extends Cubit<CollectionState> {
     emit(CollectionLoaded(collections: collections, index: this.index));
   }
 
-
+  void updateCollection(int index, Collection updatedCollection) {
+    collections[index] = updatedCollection;
+    emit(CollectionLoaded(collections: collections, index: this.index));
+  }
 }
