@@ -320,6 +320,43 @@ class _BuilderContainerState extends State<BuilderContainer> {
       title = collection.name;
       requestType = collection.method;
       collectionIndex = collection.id;
+
+      if(collection.url != null && collection.url!.isNotEmpty) {
+        urlController.text = collection.url!;
+      } else {
+        urlController.text = '';
+      }
+
+      if(collection.headers != null && collection.headers!.isNotEmpty) {
+        paramsPairs.clear();
+        collection.headers!.forEach((key, value) {
+          addParamsPair();
+          paramsPairs.last.keyController.text = key;
+          paramsPairs.last.valueController.text = value;
+        });
+        buildUrlWithQueryParams();
+      } else {
+        paramsPairs.clear();
+        addParamsPair();
+        buildUrlWithQueryParams();
+      }
+
+      if(collection.body != null && collection.body!.isNotEmpty) {
+        jsonBodyMap = collection.body!;
+        bodyPairs.clear();
+        collection.body!.forEach((key, value) {
+          addBodyParamsPair();
+          bodyPairs.last.keyController.text = key;
+          bodyPairs.last.valueController.text = value.toString();
+        });
+        buildJsonBody();
+      } else {
+        jsonBodyMap = {};
+        jsonBody = '';
+        jsonController.text = jsonBody;
+        bodyPairs.clear();
+        addBodyParamsPair();
+      }
     });
   }
 
