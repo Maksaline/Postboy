@@ -162,7 +162,10 @@ class _BuilderContainerState extends State<BuilderContainer> {
       String key = pair.keyController.text.trim();
       String value = pair.valueController.text.trim();
 
-      if (key.isNotEmpty || value.isNotEmpty) {
+      // print('Key: $key, Value: $value');
+      // print('Current JSON Map: $jsonBodyMap');
+
+      if (key.isNotEmpty && value.isNotEmpty) {
         if (value.toLowerCase() == 'true') {
           jsonBodyMap[key] = true;
         } else if (value.toLowerCase() == 'false') {
@@ -352,7 +355,6 @@ class _BuilderContainerState extends State<BuilderContainer> {
       }
 
       if(collection.body != null && collection.body!.isNotEmpty) {
-        jsonBodyMap = collection.body!;
         bodyPairs.clear();
         collection.body!.forEach((key, value) {
           addBodyParamsPair();
