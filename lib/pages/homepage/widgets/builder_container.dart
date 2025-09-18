@@ -426,290 +426,287 @@ class _BuilderContainerState extends State<BuilderContainer> {
         ),
       );
     }
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.symmetric(
-          vertical: BorderSide(
-            color: Theme.of(context).colorScheme.onPrimary,
-            width: 1.0,
+    return MouseRegion(
+      onExit: (PointerExitEvent event) {
+      updateRequest();
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.symmetric(
+            vertical: BorderSide(
+              color: Theme.of(context).colorScheme.onPrimary,
+              width: 1.0,
+            ),
           ),
         ),
-      ),
-      child: BlocBuilder<ThemeCubit, ThemeData>(
-        builder: (context, theme) {
-          return SizedBox(
-            child: Column(
-              children: [
-                Container(
-                  padding: EdgeInsets.all(16.0),
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    border: Border(
-                      bottom: BorderSide(
-                        color: theme.colorScheme.onPrimary,
-                        width: 1.0,
+        child: BlocBuilder<ThemeCubit, ThemeData>(
+          builder: (context, theme) {
+            return SizedBox(
+              child: Column(
+                children: [
+                  Container(
+                    padding: EdgeInsets.all(16.0),
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      border: Border(
+                        bottom: BorderSide(
+                          color: theme.colorScheme.onPrimary,
+                          width: 1.0,
+                        ),
                       ),
                     ),
-                  ),
-                  child: Row(
-                    children: [
-                      Flexible(
-                        child: EditableText(
-                          controller: TextEditingController(text: title),
-                          focusNode: FocusNode(),
-                          style: Theme.of(context).textTheme.titleLarge!,
-                          cursorColor: Theme.of(context).colorScheme.primary,
-                          backgroundCursorColor: Colors.transparent,
-                          onSubmitted: (newValue) {
-                            if(newValue.isEmpty) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text('Title cannot be empty')),
-                              );
-                            } else {
-                              // context.read<CollectionCubit>().updateName(collectionIndex, newValue);
-                              setState(() {
-                                title = newValue;
-                              });
-                              updateRequest();
-                            }
-                          },
-                        ),
-                      ),
-                      // const SizedBox(width: 8,),
-                      // IconButton(
-                      //   onPressed: () {
-                      //     // Handle new request action
-                      //   },
-                      //   icon: Icon(Icons.edit, color: Theme.of(context).colorScheme.onPrimary),
-                      // ),
-                      const Spacer(),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: (theme.brightness == Brightness.dark) ? Theme.of(context).colorScheme.secondary : Colors.grey.shade400,
-                          foregroundColor: Theme.of(context).colorScheme.onSecondary,
-                        ),
-                        onPressed: () {
-
-                        },
-                        child: Row(
-                          children: [
-                            Icon(Icons.save, color: Theme.of(context).colorScheme.onSecondary),
-                            SizedBox(width: 8.0),
-                            Text('Save', style: Theme.of(context).textTheme.labelLarge),
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.all(16.0),
-                    child: Column(
+                    child: Row(
                       children: [
-                        Row(
-                          children: [
-                            Container(
-                              padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 0.0),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8.0),
-                                color: Theme.of(context).colorScheme.outline,
-                                border: Border.all(
-                                  color: Theme.of(context).colorScheme.onPrimary,
-                                )
-                              ),
-                              child: DropdownButtonHideUnderline(
-                                child: DropdownButton(
-                                  onChanged: (value) {
-                                    setState(() {
-                                      requestType = value.toString();
-                                    });
-                                    // context.read<CollectionCubit>().updateMethod(collectionIndex, value.toString());
-                                    updateRequest();
-                                  },
-                                  value: requestType,
-                                  items: const [
-                                    DropdownMenuItem(value: 'GET', child: Text('GET', style: TextStyle(color: Colors.green))),
-                                    DropdownMenuItem(value: 'POST', child: Text('POST', style: TextStyle(color: Colors.blue))),
-                                    DropdownMenuItem(value: 'PUT', child: Text('PUT', style: TextStyle(color: Colors.orange))),
-                                    DropdownMenuItem(value: 'DELETE', child: Text('DELETE', style: TextStyle(color: Colors.red))),
-                                    DropdownMenuItem(value: 'PATCH', child: Text('PATCH', style: TextStyle(color: Colors.purple))),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            SizedBox(width: 8.0),
-                            Form(
-                              key: key,
-                              child: Expanded(
-                                child: TextFormField(
-                                  controller: urlController,
-                                  onFieldSubmitted: (value) {
-                                    if(value.isEmpty) {
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(content: Text('Please enter a valid URL')),
-                                      );
-                                    } else {
-                                      context.read<ResponseCubit>().loadResponse(urlController.text.toString().trim(), requestType,
-                                        bodyMap: (jsonBodyMap.isNotEmpty && bodyNeeded) ? jsonBodyMap : null,
-                                        authToken: (authToken.isNotEmpty && authNeeded) ? authToken : null,
-                                        expectedMap: (expectedOutputMap.isNotEmpty && expectOutput) ? expectedOutputMap : null,
-                                        automationMap: (automationMap.isNotEmpty) ? automationMap : null,
-                                        count: (automationOn && countController.text.isNotEmpty) ? int.tryParse(countController.text) : null,
-                                      );
-                                    }
-                                  },
-                                  validator: (value) {
-                                    if(value == null || value.isEmpty) {
-                                      return 'Please enter a valid URL';
-                                    }
-                                    return null;
-                                  },
-                                  decoration: InputDecoration(
-                                    filled: true,
-                                    fillColor: Theme.of(context).colorScheme.outline,
-                                    hintText: 'https://api.example.com/endpoint',
-                                  ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(width: 8.0),
-                            ElevatedButton(
-                              onPressed: () {
-                                if(urlController.text.isNotEmpty) {
-                                  context.read<ResponseCubit>().loadResponse(urlController.text.toString().trim(), requestType,
-                                    bodyMap: (jsonBodyMap.isNotEmpty && bodyNeeded) ? jsonBodyMap : null,
-                                    authToken: (authToken.isNotEmpty && authNeeded) ? authToken : null,
-                                    expectedMap: (expectedOutputMap.isNotEmpty && expectOutput) ? expectedOutputMap : null,
-                                    automationMap: (automationMap.isNotEmpty) ? automationMap : null,
-                                    count: (automationOn && countController.text.isNotEmpty) ? int.tryParse(countController.text) : null,
-                                  );
-                                } else {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text('Please enter a valid URL')),
-                                  );
-                                }
-                              },
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 9.0),
-                                child: Row(
-                                  children: [
-                                    Icon(Icons.send, color: Theme.of(context).colorScheme.onSecondary),
-                                    SizedBox(width: 8.0),
-                                    Text('Send', style: Theme.of(context).textTheme.bodyLarge),
-                                  ],
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                        const SizedBox(height: 16.0),
-                        Container(
-                          padding: EdgeInsets.all(4.0),
-                          width: double.infinity,
-                          height: 50,
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.outline,
-                            borderRadius: BorderRadius.circular(8.0),
+                        Flexible(
+                          child: EditableText(
+                            controller: TextEditingController(text: title),
+                            focusNode: FocusNode(),
+                            style: Theme.of(context).textTheme.titleLarge!,
+                            cursorColor: Theme.of(context).colorScheme.primary,
+                            backgroundCursorColor: Colors.transparent,
+                            onSubmitted: (newValue) {
+                              if(newValue.isEmpty) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text('Title cannot be empty')),
+                                );
+                              } else {
+                                // context.read<CollectionCubit>().updateName(collectionIndex, newValue);
+                                setState(() {
+                                  title = newValue;
+                                });
+                                updateRequest();
+                              }
+                            },
                           ),
+                        ),
+                        const Spacer(),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: (theme.brightness == Brightness.dark) ? Theme.of(context).colorScheme.secondary : Colors.grey.shade400,
+                            foregroundColor: Theme.of(context).colorScheme.onSecondary,
+                          ),
+                          onPressed: () {
+
+                          },
                           child: Row(
-                            children: tabs.map((tab) => Expanded(
-                              child: InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    tabIndex = tabs.indexOf(tab);
-                                  });
-                                },
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: tabIndex == tabs.indexOf(tab) ? Theme.of(context).colorScheme.surface : Colors.transparent,
-                                    borderRadius: BorderRadius.circular(8.0),
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      tab,
-                                      style: Theme.of(context).textTheme.labelLarge,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            )).toList(),
-                          ),
-                        ),
-                        const SizedBox(height: 16.0),
-                        Expanded(
-                          child: Column(
                             children: [
-                              Flexible(
-                                flex: 5,
-                                child: Container(
-                                  padding: EdgeInsets.all(24.0),
-                                  width: double.infinity,
-                                  height: double.infinity,
-                                  decoration: BoxDecoration(
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Theme.of(context).colorScheme.outline,
-                                        blurRadius: 2.0,
-                                        spreadRadius: 3.0,
-                                      ),
-                                    ],
-                                    color: Theme.of(context).colorScheme.surface,
-                                    borderRadius: BorderRadius.circular(8.0),
-                                    border: Border.all(
-                                      color: Theme.of(context).colorScheme.onPrimary,
-                                    ),
-                                  ),
-                                  child: tabIndex == 0 ?
-                                  paramsBuilder(context) :
-                                    tabIndex == 1 ?
-                                        bodyParamsBuilder(context) :
-                                    tabIndex == 2 ?
-                                        jsonBuilder(context) :
-                                    authBuilder(context)
-                                ),
-                              ),
-                              Flexible(
-                                flex: 3,
-                                child: Container(
-                                  padding: EdgeInsets.all(16.0),
-                                  width: double.infinity,
-                                  height: double.infinity,
-                                  margin: EdgeInsets.only(top: 16.0),
-                                  decoration: BoxDecoration(
-                                    color: Theme.of(context).colorScheme.surface,
-                                    borderRadius: BorderRadius.circular(8.0),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Theme.of(context).colorScheme.outline,
-                                        blurRadius: 2.0,
-                                        spreadRadius: 3.0,
-                                      ),
-                                    ],
-                                    border: Border.all(
-                                      color: Theme.of(context).colorScheme.onPrimary,
-                                    ),
-                                  ),
-                                  child: expectedOutputBuilder(context),
-                                ),
-                              ),
+                              Icon(Icons.save, color: Theme.of(context).colorScheme.onSecondary),
+                              SizedBox(width: 8.0),
+                              Text('Save', style: Theme.of(context).textTheme.labelLarge),
                             ],
                           ),
-                        ),
+                        )
                       ],
-                    )
+                    ),
                   ),
-                )
-              ],
-            ),
-          );
-        }
+                  Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.all(16.0),
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              Container(
+                                padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 0.0),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                  color: Theme.of(context).colorScheme.outline,
+                                  border: Border.all(
+                                    color: Theme.of(context).colorScheme.onPrimary,
+                                  )
+                                ),
+                                child: DropdownButtonHideUnderline(
+                                  child: DropdownButton(
+                                    onChanged: (value) {
+                                      setState(() {
+                                        requestType = value.toString();
+                                      });
+                                      // context.read<CollectionCubit>().updateMethod(collectionIndex, value.toString());
+                                      updateRequest();
+                                    },
+                                    value: requestType,
+                                    items: const [
+                                      DropdownMenuItem(value: 'GET', child: Text('GET', style: TextStyle(color: Colors.green))),
+                                      DropdownMenuItem(value: 'POST', child: Text('POST', style: TextStyle(color: Colors.blue))),
+                                      DropdownMenuItem(value: 'PUT', child: Text('PUT', style: TextStyle(color: Colors.orange))),
+                                      DropdownMenuItem(value: 'DELETE', child: Text('DELETE', style: TextStyle(color: Colors.red))),
+                                      DropdownMenuItem(value: 'PATCH', child: Text('PATCH', style: TextStyle(color: Colors.purple))),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: 8.0),
+                              Form(
+                                key: key,
+                                child: Expanded(
+                                  child: TextFormField(
+                                    controller: urlController,
+                                    onFieldSubmitted: (value) {
+                                      if(value.isEmpty) {
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          SnackBar(content: Text('Please enter a valid URL')),
+                                        );
+                                      } else {
+                                        context.read<ResponseCubit>().loadResponse(urlController.text.toString().trim(), requestType,
+                                          bodyMap: (jsonBodyMap.isNotEmpty && bodyNeeded) ? jsonBodyMap : null,
+                                          authToken: (authToken.isNotEmpty && authNeeded) ? authToken : null,
+                                          expectedMap: (expectedOutputMap.isNotEmpty && expectOutput) ? expectedOutputMap : null,
+                                          automationMap: (automationMap.isNotEmpty) ? automationMap : null,
+                                          count: (automationOn && countController.text.isNotEmpty) ? int.tryParse(countController.text) : null,
+                                        );
+                                      }
+                                    },
+                                    validator: (value) {
+                                      if(value == null || value.isEmpty) {
+                                        return 'Please enter a valid URL';
+                                      }
+                                      return null;
+                                    },
+                                    decoration: InputDecoration(
+                                      filled: true,
+                                      fillColor: Theme.of(context).colorScheme.outline,
+                                      hintText: 'https://api.example.com/endpoint',
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: 8.0),
+                              ElevatedButton(
+                                onPressed: () {
+                                  if(urlController.text.isNotEmpty) {
+                                    context.read<ResponseCubit>().loadResponse(urlController.text.toString().trim(), requestType,
+                                      bodyMap: (jsonBodyMap.isNotEmpty && bodyNeeded) ? jsonBodyMap : null,
+                                      authToken: (authToken.isNotEmpty && authNeeded) ? authToken : null,
+                                      expectedMap: (expectedOutputMap.isNotEmpty && expectOutput) ? expectedOutputMap : null,
+                                      automationMap: (automationMap.isNotEmpty) ? automationMap : null,
+                                      count: (automationOn && countController.text.isNotEmpty) ? int.tryParse(countController.text) : null,
+                                    );
+                                  } else {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(content: Text('Please enter a valid URL')),
+                                    );
+                                  }
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(vertical: 9.0),
+                                  child: Row(
+                                    children: [
+                                      Icon(Icons.send, color: Theme.of(context).colorScheme.onSecondary),
+                                      SizedBox(width: 8.0),
+                                      Text('Send', style: Theme.of(context).textTheme.bodyLarge),
+                                    ],
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                          const SizedBox(height: 16.0),
+                          Container(
+                            padding: EdgeInsets.all(4.0),
+                            width: double.infinity,
+                            height: 50,
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.outline,
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                            child: Row(
+                              children: tabs.map((tab) => Expanded(
+                                child: InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      tabIndex = tabs.indexOf(tab);
+                                    });
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: tabIndex == tabs.indexOf(tab) ? Theme.of(context).colorScheme.surface : Colors.transparent,
+                                      borderRadius: BorderRadius.circular(8.0),
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        tab,
+                                        style: Theme.of(context).textTheme.labelLarge,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              )).toList(),
+                            ),
+                          ),
+                          const SizedBox(height: 16.0),
+                          Expanded(
+                            child: Column(
+                              children: [
+                                Flexible(
+                                  flex: 5,
+                                  child: Container(
+                                    padding: EdgeInsets.all(24.0),
+                                    width: double.infinity,
+                                    height: double.infinity,
+                                    decoration: BoxDecoration(
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Theme.of(context).colorScheme.outline,
+                                          blurRadius: 2.0,
+                                          spreadRadius: 3.0,
+                                        ),
+                                      ],
+                                      color: Theme.of(context).colorScheme.surface,
+                                      borderRadius: BorderRadius.circular(8.0),
+                                      border: Border.all(
+                                        color: Theme.of(context).colorScheme.onPrimary,
+                                      ),
+                                    ),
+                                    child: tabIndex == 0 ?
+                                    paramsBuilder(context) :
+                                      tabIndex == 1 ?
+                                          bodyParamsBuilder(context) :
+                                      tabIndex == 2 ?
+                                          jsonBuilder(context) :
+                                      authBuilder(context)
+                                  ),
+                                ),
+                                Flexible(
+                                  flex: 3,
+                                  child: Container(
+                                    padding: EdgeInsets.all(16.0),
+                                    width: double.infinity,
+                                    height: double.infinity,
+                                    margin: EdgeInsets.only(top: 16.0),
+                                    decoration: BoxDecoration(
+                                      color: Theme.of(context).colorScheme.surface,
+                                      borderRadius: BorderRadius.circular(8.0),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Theme.of(context).colorScheme.outline,
+                                          blurRadius: 2.0,
+                                          spreadRadius: 3.0,
+                                        ),
+                                      ],
+                                      border: Border.all(
+                                        color: Theme.of(context).colorScheme.onPrimary,
+                                      ),
+                                    ),
+                                    child: expectedOutputBuilder(context),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      )
+                    ),
+                  )
+                ],
+              ),
+            );
+          }
+        ),
       ),
     );
   },
 ),
-);
-  }
+);}
 
   SingleChildScrollView paramsBuilder(BuildContext context) {
     return
