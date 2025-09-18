@@ -43,16 +43,6 @@ class CollectionCubit extends Cubit<CollectionState> {
     emit(CollectionLoaded(collections: collections, index: index));
   }
 
-  void updateName(int index, String newName) {
-    collections[index].name = newName;
-    emit(CollectionLoaded(collections: collections, index: this.index));
-  }
-
-  void updateMethod(int index, String newMethod) {
-    collections[index].method = newMethod;
-    emit(CollectionLoaded(collections: collections, index: this.index));
-  }
-
   void updateCollection(int index, Collection updatedCollection) {
     collections[index] = updatedCollection;
     emit(CollectionLoaded(collections: collections, index: this.index));

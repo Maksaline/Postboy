@@ -72,19 +72,23 @@ class _BuilderContainerState extends State<BuilderContainer> {
 
   void clearParamsPair(int index) {
     setState(() {
+      paramsMap.remove(paramsPairs[index].keyController.text.trim());
       paramsPairs[index].keyController.clear();
       paramsPairs[index].valueController.clear();
     });
     buildUrlWithQueryParams();
+    updateRequest();
   }
 
   void deleteParamsPair(int index) {
     setState(() {
+      paramsMap.remove(paramsPairs[index].keyController.text.trim());
       paramsPairs[index].keyController.dispose();
       paramsPairs[index].valueController.dispose();
       paramsPairs.removeAt(index);
     });
     buildUrlWithQueryParams();
+    updateRequest();
   }
 
   void buildUrlWithQueryParams() {
@@ -97,7 +101,6 @@ class _BuilderContainerState extends State<BuilderContainer> {
     String cleanBaseUrl = baseUrl.split('?')[0];
 
     List<String> queryParams = [];
-    paramsMap.clear();
     for (var pair in paramsPairs) {
       String key = pair.keyController.text.trim();
       String value = pair.valueController.text.trim();
@@ -322,7 +325,6 @@ class _BuilderContainerState extends State<BuilderContainer> {
   //----- Automation Handlers end-----//
 
   void requestBuilder(Collection collection) {
-    print('For ${collection.id} : ${collection.headers}');
     setState(() {
       title = collection.name;
       requestType = collection.method;
@@ -339,11 +341,12 @@ class _BuilderContainerState extends State<BuilderContainer> {
         collection.headers!.forEach((key, value) {
           addParamsPair();
           paramsPairs.last.keyController.text = key;
-          paramsPairs.last.valueController.text = value;
+          paramsPairs.last.valueController.text = value.toString();
         });
         buildUrlWithQueryParams();
       } else {
         paramsPairs.clear();
+        paramsMap.clear();
         addParamsPair();
         buildUrlWithQueryParams();
       }
@@ -368,14 +371,14 @@ class _BuilderContainerState extends State<BuilderContainer> {
   }
 
   void updateRequest() {
-    print('Updating $collectionIndex : $paramsMap');
+    // print('Updating $collectionIndex : $paramsMap');
     Collection updatedCollection = Collection(
       name: title,
       id: collectionIndex,
       method: requestType,
       url: urlController.text.trim(),
-      headers: paramsMap.isNotEmpty ? paramsMap : null,
-      body: jsonBodyMap.isNotEmpty ? jsonBodyMap : null,
+      headers: paramsMap.isNotEmpty ? paramsMap.map((key, value) => MapEntry(key, value.toString())) : null,
+      body: jsonBodyMap.isNotEmpty ? jsonBodyMap.map((key, value) => MapEntry(key, value.toString())) : null,
       authToken: authNeeded && authToken.isNotEmpty ? authToken : null,
       expected: expectOutput && expectedOutputMap.isNotEmpty ? expectedOutputMap.map((key, value) => MapEntry(key, value.toString())) : null,
       automation: automationMap.isNotEmpty ? automationMap.map((key, value) => MapEntry(key, value)) : null,
@@ -448,14 +451,6 @@ class _BuilderContainerState extends State<BuilderContainer> {
                   ),
                   child: Row(
                     children: [
-                      // EditableTitleWidget(
-                      //   initialTitle: title,
-                      //   onTitleChanged: (newTitle) {
-                      //     setState(() {
-                      //       title = newTitle;
-                      //     });
-                      //   },
-                      // ),
                       Flexible(
                         child: EditableText(
                           controller: TextEditingController(text: title),

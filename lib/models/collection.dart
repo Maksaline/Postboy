@@ -2,8 +2,8 @@ class Collection {
   String method;
   String name;
   String? url;
-  Map<String, dynamic>? headers;
-  Map<String, dynamic>? body;
+  Map<String, String>? headers;
+  Map<String, String>? body;
   String? authToken;
   Map<String, Map<String, dynamic>>? automation;
   int? count;
