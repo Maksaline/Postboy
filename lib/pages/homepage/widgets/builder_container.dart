@@ -381,6 +381,21 @@ class _BuilderContainerState extends State<BuilderContainer> {
         authToken = '';
       }
 
+      if(collection.expected != null && collection.expected!.isNotEmpty) {
+        expectedPairs.clear();
+        collection.expected!.forEach((key, value) {
+          addExpectedOutputParamsPair();
+          expectedPairs.last.keyController.text = key;
+          expectedPairs.last.valueController.text = value.toString() == "<<<Anything>>>" ? '' : value.toString();
+        });
+        buildExpectedOutput();
+      } else {
+        expectedOutputMap = {};
+        expectedPairs.clear();
+        addExpectedOutputParamsPair();
+        buildExpectedOutput();
+      }
+
     });
   }
 
