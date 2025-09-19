@@ -10,6 +10,10 @@ class Collection {
   Map<String, String>? expected;
   bool saved;
   final int id;
+  bool jsonOn;
+  bool authOn;
+  bool expectedOn;
+  bool automationOn;
   
   Collection({
     required this.method,
@@ -23,5 +27,9 @@ class Collection {
     this.count,
     this.expected,
     this.saved = false,
+    this.jsonOn = false,
+    this.authOn = false,
+    this.expectedOn = false,
+    this.automationOn = false,
   });
 }

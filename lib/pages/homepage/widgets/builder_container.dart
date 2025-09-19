@@ -369,11 +369,22 @@ class _BuilderContainerState extends State<BuilderContainer> {
         bodyPairs.clear();
         addBodyParamsPair();
       }
+
+      bodyNeeded = collection.jsonOn;
+      authNeeded = collection.authOn;
+      expectOutput = collection.expectedOn;
+      automationOn = collection.automationOn;
+
+      if(collection.authToken != null && collection.authToken!.isNotEmpty) {
+        authToken = collection.authToken!;
+      } else {
+        authToken = '';
+      }
+
     });
   }
 
   void updateRequest() {
-    // print('Updating $collectionIndex : $paramsMap');
     Collection updatedCollection = Collection(
       name: title,
       id: collectionIndex,
@@ -385,6 +396,10 @@ class _BuilderContainerState extends State<BuilderContainer> {
       expected: expectOutput && expectedOutputMap.isNotEmpty ? expectedOutputMap.map((key, value) => MapEntry(key, value.toString())) : null,
       automation: automationMap.isNotEmpty ? automationMap.map((key, value) => MapEntry(key, value)) : null,
       count: automationOn && countController.text.isNotEmpty ? int.tryParse(countController.text) : null,
+      jsonOn: bodyNeeded,
+      authOn: authNeeded,
+      expectedOn: expectOutput,
+      automationOn: automationOn,
     );
     context.read<CollectionCubit>().updateCollection(collectionIndex, updatedCollection);
   }
@@ -1069,7 +1084,7 @@ class _BuilderContainerState extends State<BuilderContainer> {
               const SizedBox(width: 16.0),
               Expanded(
                 child: TextFormField(
-                  initialValue: authToken,
+                  controller: TextEditingController(text: authToken),
                   onChanged: (value) {
                     setState(() {
                       authToken = value.trim();
