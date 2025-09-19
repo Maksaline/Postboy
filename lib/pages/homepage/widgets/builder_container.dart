@@ -162,9 +162,6 @@ class _BuilderContainerState extends State<BuilderContainer> {
       String key = pair.keyController.text.trim();
       String value = pair.valueController.text.trim();
 
-      // print('Key: $key, Value: $value');
-      // print('Current JSON Map: $jsonBodyMap');
-
       if (key.isNotEmpty && value.isNotEmpty) {
         if (value.toLowerCase() == 'true') {
           jsonBodyMap[key] = true;
@@ -316,6 +313,8 @@ class _BuilderContainerState extends State<BuilderContainer> {
       'upper': upper,
     };
 
+    print(newPair);
+
 
     setState(() {
       automationMap[bodyPairs[index].keyController.text.trim()] = newPair;
@@ -354,12 +353,24 @@ class _BuilderContainerState extends State<BuilderContainer> {
         buildUrlWithQueryParams();
       }
 
+
       if(collection.body != null && collection.body!.isNotEmpty) {
         bodyPairs.clear();
         collection.body!.forEach((key, value) {
           addBodyParamsPair();
           bodyPairs.last.keyController.text = key;
           bodyPairs.last.valueController.text = value.toString();
+          // if(collection.automation != null && collection.automation!.isNotEmpty && collection.automation![key]!.isNotEmpty) {
+          //   final map = collection.automation![key]!;
+          //   automationMap[key] = map;
+          //   bodyPairs.last.selectedType = map['type'];
+          //   bodyPairs.last.selectedOption = map['option'];
+          //   bodyPairs.last.lowerController.text = map['lower']?.toString() ?? '';
+          //   bodyPairs.last.upperController.text = map['upper']?.toString() ?? '';
+          //   bodyPairs.last.valueController.text = '<<<Automation>>>';
+          // } else {
+          //   automationMap.remove(key);
+          // }
         });
         buildJsonBody();
       } else {
@@ -368,6 +379,12 @@ class _BuilderContainerState extends State<BuilderContainer> {
         jsonController.text = jsonBody;
         bodyPairs.clear();
         addBodyParamsPair();
+      }
+
+      if(collection.count != null) {
+        countController.text = collection.count.toString();
+      } else {
+        countController.text = '';
       }
 
       bodyNeeded = collection.jsonOn;
@@ -395,7 +412,6 @@ class _BuilderContainerState extends State<BuilderContainer> {
         addExpectedOutputParamsPair();
         buildExpectedOutput();
       }
-
     });
   }
 
@@ -791,6 +807,8 @@ class _BuilderContainerState extends State<BuilderContainer> {
                     onValueChanged: (value) => buildUrlWithQueryParams(),
                     onKeySubmitted: (value) => buildUrlWithQueryParams(),
                     onValueSubmitted: (value) => buildUrlWithQueryParams(),
+                    lowerController: pair.lowerController,
+                    upperController: pair.upperController,
                   );
                 }),
                 Padding(
@@ -1188,6 +1206,8 @@ class _BuilderContainerState extends State<BuilderContainer> {
                     onValueChanged: (value) => buildExpectedOutput(),
                     onKeySubmitted: (value) => buildExpectedOutput(),
                     onValueSubmitted: (value) => buildExpectedOutput(),
+                    lowerController: pair.lowerController,
+                    upperController: pair.upperController,
                   );
                 }),
                 Padding(
