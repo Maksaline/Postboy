@@ -5,15 +5,19 @@ class KeyValuePair {
   final TextEditingController valueController = TextEditingController();
   String selectedType = 'Int';
   String selectedOption = 'Random';
-  final TextEditingController lowerController = TextEditingController();
-  final TextEditingController upperController = TextEditingController();
+  // final TextEditingController lowerController = TextEditingController();
+  // final TextEditingController upperController = TextEditingController();
+  int lower = -1;
+  int upper = -1;
 
   // Optional: Add getters for convenience
   String get key => keyController.text;
   String get value => valueController.text;
-  int? get lower => int.tryParse(lowerController.text);
-  int? get upper => int.tryParse(upperController.text);
-  bool get isRangeValid => lower != null && upper != null && lower! <= upper!;
+  // int? get lower => int.tryParse(lowerController.text);
+  // int? get upper => int.tryParse(upperController.text);
+  // bool get isRangeValid => lower != null && upper != null && lower! <= upper!;
+  int get lowerBound => lower;
+  int get upperBound => upper;
   String get type => selectedType;
   String get option => selectedOption;
 
@@ -21,8 +25,8 @@ class KeyValuePair {
   void clear() {
     keyController.clear();
     valueController.clear();
-    lowerController.clear();
-    upperController.clear();
+    // lowerController.clear();
+    // upperController.clear();
   }
 
   bool get isEmpty => keyController.text.isEmpty && valueController.text.isEmpty;
@@ -32,8 +36,8 @@ class KeyValuePair {
   void dispose() {
     keyController.dispose();
     valueController.dispose();
-    lowerController.dispose();
-    upperController.dispose();
+    // lowerController.dispose();
+    // upperController.dispose();
   }
 
   // Optional: Convert to Map for easy serialization

@@ -14,11 +14,13 @@ class KeyValueRow extends StatelessWidget {
   final bool advance;
   final String? selectedType;
   final String? selectedOption;
-  final TextEditingController? lowerController;
-  final TextEditingController? upperController;
+  final int? lower;
+  final int? upper;
   final Function(BuildContext)? onOkPressed;
   final ValueChanged<String?>? onTypeChanged;
   final ValueChanged<String?>? onOptionChanged;
+  final ValueChanged<String?>? onlowerChanged;
+  final ValueChanged<String?>? onUpperChanged;
 
   const KeyValueRow({
     super.key,
@@ -33,12 +35,14 @@ class KeyValueRow extends StatelessWidget {
     this.enabled = true,
     this.advance = false,
     this.selectedType = 'Int',
-    this.lowerController,
-    this.upperController,
+    this.lower = -1,
+    this.upper = -1,
     this.onOkPressed,
     this.selectedOption = 'Random',
     this.onTypeChanged,
     this.onOptionChanged,
+    this.onlowerChanged,
+    this.onUpperChanged,
   });
 
 
@@ -159,11 +163,12 @@ class KeyValueRow extends StatelessWidget {
                                       Padding(
                                         padding: EdgeInsets.all(8.0),
                                         child: TextFormField(
+                                          onChanged: onlowerChanged,
                                           inputFormatters: [
                                             FilteringTextInputFormatter.digitsOnly, // Only digits 0-9
                                           ],
                                           keyboardType: TextInputType.number,
-                                          controller: lowerController,
+                                          controller: TextEditingController(text: lower == -1 ? '' : lower.toString()),
                                           decoration: InputDecoration(
                                             hintText: 'Lower Bound',
                                           ),
@@ -180,11 +185,12 @@ class KeyValueRow extends StatelessWidget {
                                       Padding(
                                         padding: EdgeInsets.all(8.0),
                                         child: TextFormField(
+                                          onChanged: onUpperChanged,
                                           inputFormatters: [
                                             FilteringTextInputFormatter.digitsOnly, // Only digits 0-9
                                           ],
                                           keyboardType: TextInputType.number,
-                                          controller: upperController,
+                                          controller: TextEditingController(text: upper == -1 ? '' : upper.toString()),
                                           decoration: InputDecoration(
                                             hintText: 'Upper Bound',
                                           ),

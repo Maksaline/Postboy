@@ -162,7 +162,7 @@ class _BuilderContainerState extends State<BuilderContainer> {
       String key = pair.keyController.text.trim();
       String value = pair.valueController.text.trim();
 
-      if (key.isNotEmpty && value.isNotEmpty) {
+      if (key.isNotEmpty || value.isNotEmpty) {
         if (value.toLowerCase() == 'true') {
           jsonBodyMap[key] = true;
         } else if (value.toLowerCase() == 'false') {
@@ -281,6 +281,22 @@ class _BuilderContainerState extends State<BuilderContainer> {
     });
   }
 
+  void onLowerChanged(int index, String newLower) {
+    int? lower = int.tryParse(newLower);
+    lower ??= -1;
+    setState(() {
+      bodyPairs[index].lower = lower!;
+    });
+  }
+
+  void onUpperChanged(int index, String newUpper) {
+    int? upper = int.tryParse(newUpper);
+    upper ??= -1;
+    setState(() {
+      bodyPairs[index].upper = upper!;
+    });
+  }
+
   void onSavePressed(BuildContext context, int index) {
     if(bodyPairs[index].keyController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -295,7 +311,7 @@ class _BuilderContainerState extends State<BuilderContainer> {
       return;
     }
 
-    if(bodyPairs[index].lowerController.text.isEmpty || bodyPairs[index].upperController.text.isEmpty) {
+    if(bodyPairs[index].lower == -1 && bodyPairs[index].upper == -1) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Please enter a range for automation')),
       );
@@ -303,8 +319,8 @@ class _BuilderContainerState extends State<BuilderContainer> {
     }
     String newType = bodyPairs[index].selectedType;
     String newOption = bodyPairs[index].selectedOption;
-    int? lower = bodyPairs[index].lowerController.text.isEmpty ? null : int.tryParse(bodyPairs[index].lowerController.text);
-    int? upper = bodyPairs[index].upperController.text.isEmpty ? null : int.tryParse(bodyPairs[index].upperController.text);
+    int? lower = bodyPairs[index].lower == -1 ? null : bodyPairs[index].lower;
+    int? upper = bodyPairs[index].upper == -1 ? null : bodyPairs[index].upper;
 
     Map<String, dynamic> newPair = {
       'type': newType,
@@ -312,9 +328,6 @@ class _BuilderContainerState extends State<BuilderContainer> {
       'lower': lower,
       'upper': upper,
     };
-
-    print(newPair);
-
 
     setState(() {
       automationMap[bodyPairs[index].keyController.text.trim()] = newPair;
@@ -360,17 +373,17 @@ class _BuilderContainerState extends State<BuilderContainer> {
           addBodyParamsPair();
           bodyPairs.last.keyController.text = key;
           bodyPairs.last.valueController.text = value.toString();
-          // if(collection.automation != null && collection.automation!.isNotEmpty && collection.automation![key]!.isNotEmpty) {
-          //   final map = collection.automation![key]!;
-          //   automationMap[key] = map;
-          //   bodyPairs.last.selectedType = map['type'];
-          //   bodyPairs.last.selectedOption = map['option'];
-          //   bodyPairs.last.lowerController.text = map['lower']?.toString() ?? '';
-          //   bodyPairs.last.upperController.text = map['upper']?.toString() ?? '';
-          //   bodyPairs.last.valueController.text = '<<<Automation>>>';
-          // } else {
-          //   automationMap.remove(key);
-          // }
+          if(collection.automation != null && collection.automation!.isNotEmpty && collection.automation!.containsKey(key)) {
+            final map = collection.automation![key]!;
+            automationMap[key] = map;
+            bodyPairs.last.selectedType = map['type'];
+            bodyPairs.last.selectedOption = map['option'];
+            bodyPairs.last.lower = map['lower'] ?? -1;
+            bodyPairs.last.upper = map['upper'] ?? -1;
+            bodyPairs.last.valueController.text = '<<<Automation>>>';
+          } else {
+            automationMap.remove(key);
+          }
         });
         buildJsonBody();
       } else {
@@ -807,8 +820,6 @@ class _BuilderContainerState extends State<BuilderContainer> {
                     onValueChanged: (value) => buildUrlWithQueryParams(),
                     onKeySubmitted: (value) => buildUrlWithQueryParams(),
                     onValueSubmitted: (value) => buildUrlWithQueryParams(),
-                    lowerController: pair.lowerController,
-                    upperController: pair.upperController,
                   );
                 }),
                 Padding(
@@ -951,9 +962,11 @@ class _BuilderContainerState extends State<BuilderContainer> {
                     onOptionChanged: (value) => onOptionChanged(index, value!),
                     selectedOption: pair.selectedOption,
                     selectedType: pair.selectedType,
-                    lowerController: pair.lowerController,
-                    upperController: pair.upperController,
+                    lower: pair.lower,
+                    upper: pair.upper,
                     onOkPressed: (context) => onSavePressed(context, index),
+                    onlowerChanged: (value) => onLowerChanged(index, value!),
+                    onUpperChanged: (value) => onUpperChanged(index, value!)
                   );
                 }),
                 Padding(
@@ -1206,8 +1219,6 @@ class _BuilderContainerState extends State<BuilderContainer> {
                     onValueChanged: (value) => buildExpectedOutput(),
                     onKeySubmitted: (value) => buildExpectedOutput(),
                     onValueSubmitted: (value) => buildExpectedOutput(),
-                    lowerController: pair.lowerController,
-                    upperController: pair.upperController,
                   );
                 }),
                 Padding(

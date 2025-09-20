@@ -71,13 +71,11 @@ class ResponseCubit extends Cubit<ResponseState> {
                   newValue = min(lower + i, upper);
                 }
               } else if (val['type'] == 'Double') {
-                double randomDouble = lower +
-                    rand.nextDouble() * (upper - lower);
+                double randomDouble = lower + rand.nextDouble() * (upper - lower);
                 if (val['option'] == 'Random') {
                   newValue = double.parse(randomDouble.toStringAsFixed(2));
                 } else {
-                  newValue =
-                      double.parse(min(lower + i, upper).toStringAsFixed(2));
+                  newValue = double.parse(min(lower + i, upper).toStringAsFixed(2));
                 }
               } else if (val['type'] == 'String') {
                 if (val['option'] == 'Random') {
@@ -93,9 +91,8 @@ class ResponseCubit extends Cubit<ResponseState> {
                   }
                   newValue = NameGenerator.generateRandomName(length);
                 }
-              } else if (val['type'] == 'Boolean') {
-                newValue =
-                val['option'] == 'Random' ? rand.nextBool() : (i % 2 == 0);
+              } else if (val['type'] == 'Bool') {
+                newValue = val['option'] == 'Random' ? rand.nextBool() : (i % 2 == 0);
               }
             }
             newData[key] = newValue;
