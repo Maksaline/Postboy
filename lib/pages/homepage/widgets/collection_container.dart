@@ -13,7 +13,6 @@ class CollectionContainer extends StatefulWidget {
 }
 
 class _CollectionContainerState extends State<CollectionContainer> {
-  int selectedIndex = 0;
 
   @override
   void initState() {
