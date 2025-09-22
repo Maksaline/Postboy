@@ -141,7 +141,8 @@ class _CollectionContainerState extends State<CollectionContainer> {
                                   methodColor = Colors.black;
                               }
                               return ListTile(
-                                selectedTileColor: Theme.of(context).colorScheme.primary.withAlpha(25),
+                                selectedTileColor: Theme.of(context).colorScheme.primary.withAlpha(50),
+                                selectedColor: Theme.of(context).colorScheme.onSecondary,
                                 selected: state.index == index,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(8.0),
