@@ -13,6 +13,7 @@ class CollectionContainer extends StatefulWidget {
 }
 
 class _CollectionContainerState extends State<CollectionContainer> {
+  int selectedIndex = 0;
 
   @override
   void initState() {
@@ -109,58 +110,66 @@ class _CollectionContainerState extends State<CollectionContainer> {
                             child: Text('No Collections Found', style: Theme.of(context).textTheme.bodyMedium),
                           );
                         }
-                        return ListView.builder(
-                          itemCount: collections.length,
-                          itemBuilder: (context, index) {
-                            Color methodColor;
-                            switch (collections[index].method) {
-                              case 'GET':
-                                methodColor = Colors.green;
-                                break;
-                              case 'POST':
-                                methodColor = Colors.blue;
-                                break;
-                              case 'PUT':
-                                methodColor = Colors.orange;
-                                break;
-                              case 'DELETE':
-                                methodColor = Colors.red;
-                                break;
-                              case 'PATCH':
-                                methodColor = Colors.purple;
-                                break;
-                              case 'HEAD':
-                                methodColor = Colors.brown;
-                                break;
-                              case 'OPTIONS':
-                                methodColor = Colors.grey;
-                                break;
-                              default:
-                                methodColor = Colors.black;
-                            }
-                            return ListTile(
-                              title: Row(
-                                children: [
-                                  Text(collections[index].method, style: Theme
-                                      .of(context)
-                                      .textTheme
-                                      .titleMedium
-                                      ?.copyWith(color: methodColor),),
-                                  SizedBox(width: 16.0),
-                                  Expanded(
-                                    child: Text(
-                                        collections[index].name,
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 1,
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8.0),
+                          child: ListView.builder(
+                            itemCount: collections.length,
+                            itemBuilder: (context, index) {
+                              Color methodColor;
+                              switch (collections[index].method) {
+                                case 'GET':
+                                  methodColor = Colors.green;
+                                  break;
+                                case 'POST':
+                                  methodColor = Colors.blue;
+                                  break;
+                                case 'PUT':
+                                  methodColor = Colors.orange;
+                                  break;
+                                case 'DELETE':
+                                  methodColor = Colors.red;
+                                  break;
+                                case 'PATCH':
+                                  methodColor = Colors.purple;
+                                  break;
+                                case 'HEAD':
+                                  methodColor = Colors.brown;
+                                  break;
+                                case 'OPTIONS':
+                                  methodColor = Colors.grey;
+                                  break;
+                                default:
+                                  methodColor = Colors.black;
+                              }
+                              return ListTile(
+                                selectedTileColor: Theme.of(context).colorScheme.primary.withAlpha(25),
+                                selected: state.index == index,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                ),
+                                title: Row(
+                                  children: [
+                                    Text(collections[index].method, style: Theme
+                                        .of(context)
+                                        .textTheme
+                                        .titleMedium
+                                        ?.copyWith(color: methodColor),),
+                                    SizedBox(width: 16.0),
+                                    Expanded(
+                                      child: Text(
+                                          collections[index].name,
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 1,
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                              onTap: () {
-                                context.read<CollectionCubit>().updateIndex(index);
-                              },
-                            );
-                          },
+                                  ],
+                                ),
+                                onTap: () {
+                                  context.read<CollectionCubit>().updateIndex(index);
+                                },
+                              );
+                            },
+                          ),
                         );
                       } else {
                         return Center(
