@@ -1045,8 +1045,10 @@ class _BuilderContainerState extends State<BuilderContainer> {
                   backgroundColor: Theme.of(context).colorScheme.outline,
                 ),
                 onPressed: () {
-                  // Handle save response action
-
+                  setState(() {
+                    jsonBody = jsonBodyMap.isNotEmpty ? JsonEncoder.withIndent('    ').convert(jsonBodyMap) : '';
+                    jsonController.text = jsonBody;
+                  });
                 },
                 child: Row(
                   children: [
