@@ -190,7 +190,10 @@ class _BuilderContainerState extends State<BuilderContainer> {
   //----- JSON function start -----//
   void buildJSONMap(String jsonText) {
     try {
-      Map<String, dynamic> parsedJson = json.decode(jsonText);
+      Map<String, dynamic> parsedJson = {};
+      if(jsonText.isNotEmpty) {
+        parsedJson = json.decode(jsonText);
+      }
       setState(() {
         jsonBodyMap = parsedJson;
       });
@@ -210,6 +213,9 @@ class _BuilderContainerState extends State<BuilderContainer> {
       }
       bodyPairs.add(pair);
     });
+    if(bodyPairs.isEmpty) {
+      addBodyParamsPair();
+    }
   }
 
 
@@ -339,6 +345,8 @@ class _BuilderContainerState extends State<BuilderContainer> {
   }
   //----- Automation Handlers end-----//
 
+
+  //----- Communication with cubit functions start-----//
   void requestBuilder(Collection collection) {
     setState(() {
       title = collection.name;
@@ -447,6 +455,8 @@ class _BuilderContainerState extends State<BuilderContainer> {
     );
     context.read<CollectionCubit>().updateCollection(collectionIndex, updatedCollection);
   }
+
+  //----- Communication with cubit functions End-----//
 
   @override
   void initState() {
