@@ -149,12 +149,14 @@ class _CollectionContainerState extends State<CollectionContainer> {
                                 ),
                                 title: Row(
                                   children: [
-                                    Text(collections[index].method, style: Theme
-                                        .of(context)
-                                        .textTheme
-                                        .titleMedium
-                                        ?.copyWith(color: methodColor),),
-                                    SizedBox(width: 16.0),
+                                    SizedBox(
+                                      width: 65,
+                                      child: Text(collections[index].method, style: Theme
+                                          .of(context)
+                                          .textTheme
+                                          .titleMedium
+                                          ?.copyWith(color: methodColor),),
+                                    ),
                                     Expanded(
                                       child: Text(
                                           collections[index].name,

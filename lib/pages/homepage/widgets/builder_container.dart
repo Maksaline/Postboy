@@ -347,11 +347,11 @@ class _BuilderContainerState extends State<BuilderContainer> {
 
 
   //----- Communication with cubit functions start-----//
-  void requestBuilder(Collection collection) {
+  void requestBuilder(Collection collection, int index) {
     setState(() {
       title = collection.name;
       requestType = collection.method;
-      collectionIndex = collection.id;
+      collectionIndex = index;
 
       if(collection.url != null && collection.url!.isNotEmpty) {
         urlController.text = collection.url!;
@@ -472,7 +472,7 @@ class _BuilderContainerState extends State<BuilderContainer> {
   listener: (context, state) {
     if (state is CollectionLoaded) {
       if (state.index >= 0 && state.index < state.collections.length) {
-        requestBuilder(state.collections[state.index]);
+        requestBuilder(state.collections[state.index], state.index);
       }
     }
   },

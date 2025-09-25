@@ -8,7 +8,6 @@ class Collection {
   Map<String, Map<String, dynamic>>? automation;
   int? count;
   Map<String, String>? expected;
-  bool saved;
   final int id;
   bool jsonOn;
   bool authOn;
@@ -26,7 +25,6 @@ class Collection {
     this.automation,
     this.count,
     this.expected,
-    this.saved = false,
     this.jsonOn = false,
     this.authOn = false,
     this.expectedOn = false,

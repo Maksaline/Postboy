@@ -18,7 +18,7 @@ class CollectionCubit extends Cubit<CollectionState> {
       collections.add(
         Collection(
           name: 'New Request',
-          id: newIndex,
+          id: -1,
           method: 'GET',
         )
       );
