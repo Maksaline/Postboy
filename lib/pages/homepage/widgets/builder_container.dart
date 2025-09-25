@@ -488,10 +488,20 @@ class _BuilderContainerState extends State<BuilderContainer> {
   },
   builder: (context, selectedCollection) {
     if (selectedCollection == null) {
-      return Center(
-        child: Text(
-          'No Collection Selected',
-          style: Theme.of(context).textTheme.bodyLarge,
+      return Container(
+        decoration: BoxDecoration(
+          border: Border.symmetric(
+            vertical: BorderSide(
+              color: Theme.of(context).colorScheme.onPrimary,
+              width: 1.0,
+            ),
+          ),
+        ),
+        child: Center(
+          child: Text(
+            'Please create a request to get started',
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
         ),
       );
     }

@@ -106,7 +106,7 @@ class _CollectionContainerState extends State<CollectionContainer> {
                         List<Collection> collections = state.collections;
                         if (collections.isEmpty) {
                           return Center(
-                            child: Text('No Collections Found', style: Theme.of(context).textTheme.bodyMedium),
+                            child: Text('Please add a Request', style: Theme.of(context).textTheme.bodyMedium),
                           );
                         }
                         return Padding(
@@ -141,6 +141,7 @@ class _CollectionContainerState extends State<CollectionContainer> {
                                   methodColor = Colors.black;
                               }
                               return ListTile(
+                                contentPadding: EdgeInsets.only(left: 8.0, top: 4.0, bottom: 4.0, right: 0.0),
                                 selectedTileColor: Theme.of(context).colorScheme.primary.withAlpha(50),
                                 selectedColor: Theme.of(context).colorScheme.onSecondary,
                                 selected: state.index == index,
@@ -169,13 +170,32 @@ class _CollectionContainerState extends State<CollectionContainer> {
                                 onTap: () {
                                   context.read<CollectionCubit>().updateIndex(index);
                                 },
+                                trailing: PopupMenuButton(
+                                  tooltip: 'Actions',
+                                  icon: Icon(Icons.more_vert),
+                                  itemBuilder: (context) => [
+                                    PopupMenuItem(
+                                      value: 'delete',
+                                      child: Row(
+                                        children: [
+                                          Icon(Icons.delete, color: Colors.red),
+                                          SizedBox(width: 8.0),
+                                          Text('Delete'),
+                                        ],
+                                      ),
+                                      onTap: () {
+                                        context.read<CollectionCubit>().deleteCollection(index);
+                                      },
+                                    ),
+                                  ],
+                                ),
                               );
                             },
                           ),
                         );
                       } else {
                         return Center(
-                          child: Text('No Collections Found', style: Theme.of(context).textTheme.bodyMedium),
+                          child: Text('No Collection Found', style: Theme.of(context).textTheme.bodyMedium),
                         );
                       }
                     }

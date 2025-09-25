@@ -14,7 +14,6 @@ class CollectionCubit extends Cubit<CollectionState> {
   void addNewCollection() {
     emit(CollectionLoading());
     try {
-      int newIndex = collections.length;
       collections.add(
         Collection(
           name: 'New Request',
@@ -45,6 +44,20 @@ class CollectionCubit extends Cubit<CollectionState> {
 
   void updateCollection(int index, Collection updatedCollection) {
     collections[index] = updatedCollection;
+    emit(CollectionLoaded(collections: collections, index: this.index));
+  }
+
+  void deleteCollection(int index) {
+    collections.removeAt(index);
+    if (this.index >= collections.length) {
+      this.index = collections.length - 1;
+    }
+    if(this.index == index) {
+      this.index = 0;
+    }
+    if(this.index < 0) {
+      this.index = 0;
+    }
     emit(CollectionLoaded(collections: collections, index: this.index));
   }
 }
