@@ -73,7 +73,7 @@ class _CollectionContainerState extends State<CollectionContainer> {
                   SizedBox(width: 8.0),
                   Expanded(
                       child: Text(
-                          'Collections',
+                          'Requests',
                           style: Theme.of(context).textTheme.titleLarge,
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1
