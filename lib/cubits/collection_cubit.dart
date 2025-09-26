@@ -1,6 +1,10 @@
+import 'dart:convert';
+
+import 'package:drift/drift.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:flutter/material.dart';
+import 'package:minimalist_api_tester/db/database.dart';
 
 import '../models/collection.dart';
 
@@ -10,6 +14,7 @@ class CollectionCubit extends Cubit<CollectionState> {
   CollectionCubit() : super(CollectionInitial());
   List<Collection> collections = [];
   int index = 0;
+  final AppDatabase database = AppDatabase();
 
   void addNewCollection() {
     emit(CollectionLoading());
@@ -59,5 +64,39 @@ class CollectionCubit extends Cubit<CollectionState> {
       this.index = 0;
     }
     emit(CollectionLoaded(collections: collections, index: this.index));
+  }
+
+  void saveRequest(Collection collection) async {
+    const JsonEncoder encoder = JsonEncoder.withIndent('    ');
+    String headers = encoder.convert(collection.headers ?? {});
+    String body = encoder.convert(collection.body ?? {});
+    String expected = encoder.convert(collection.expected ?? {});
+    String automation = encoder.convert(collection.automation ?? {});
+    final response = await database.into(database.requests).insert(
+      RequestsCompanion(
+        name: Value(collection.name),
+        url: Value(collection.url ?? ''),
+        method: Value(collection.method),
+        body: Value(body),
+        expectedResponse: Value(expected),
+        automation: Value(automation),
+        authToken: Value(collection.authToken),
+        headers: Value(headers),
+        count: Value(collection.count),
+        jsonOn: Value(collection.jsonOn),
+        authOn: Value(collection.authOn),
+        expectedOn: Value(collection.expectedOn),
+        automationOn: Value(collection.automationOn),
+        createdAt: Value(DateTime.now()),
+      ),
+    );
+    fetchSavedRequests();
+  }
+
+  void fetchSavedRequests() async {
+    final response = await database.managers.requests.get();
+    JsonEncoder encoder = JsonEncoder.withIndent('  ');
+    String output = encoder.convert(response);
+    print(output);
   }
 }

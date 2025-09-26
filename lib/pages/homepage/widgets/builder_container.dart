@@ -565,7 +565,23 @@ class _BuilderContainerState extends State<BuilderContainer> {
                             foregroundColor: Theme.of(context).colorScheme.onSecondary,
                           ),
                           onPressed: () {
-
+                            Collection updatedCollection = Collection(
+                              name: title,
+                              id: collectionIndex,
+                              method: requestType,
+                              url: urlController.text.trim(),
+                              headers: paramsMap.isNotEmpty ? paramsMap.map((key, value) => MapEntry(key, value.toString())) : null,
+                              body: jsonBodyMap.isNotEmpty ? jsonBodyMap.map((key, value) => MapEntry(key, value.toString())) : null,
+                              authToken: authToken.isNotEmpty ? authToken : null,
+                              expected: expectedOutputMap.isNotEmpty ? expectedOutputMap.map((key, value) => MapEntry(key, value.toString())) : null,
+                              automation: automationMap.isNotEmpty ? automationMap.map((key, value) => MapEntry(key, value)) : null,
+                              count: countController.text.isNotEmpty ? int.tryParse(countController.text) : null,
+                              jsonOn: bodyNeeded,
+                              authOn: authNeeded,
+                              expectedOn: expectOutput,
+                              automationOn: automationOn,
+                            );
+                            context.read<CollectionCubit>().saveRequest(updatedCollection);
                           },
                           child: Row(
                             children: [
