@@ -25,6 +25,7 @@ class _BuilderContainerState extends State<BuilderContainer> {
   String title = 'New Request';
   int tabIndex = 0;
   int collectionIndex = 0;
+  int requestId = 0;
   bool bodyNeeded = false;
   bool authNeeded = false;
   bool expectOutput = false;
@@ -352,6 +353,7 @@ class _BuilderContainerState extends State<BuilderContainer> {
       title = collection.name;
       requestType = collection.method;
       collectionIndex = index;
+      requestId = collection.id;
 
       if(collection.url != null && collection.url!.isNotEmpty) {
         urlController.text = collection.url!;
@@ -439,7 +441,7 @@ class _BuilderContainerState extends State<BuilderContainer> {
   void updateRequest() {
     Collection updatedCollection = Collection(
       name: title,
-      id: collectionIndex,
+      id: requestId,
       method: requestType,
       url: urlController.text.trim(),
       headers: paramsMap.isNotEmpty ? paramsMap.map((key, value) => MapEntry(key, value.toString())) : null,
@@ -567,7 +569,7 @@ class _BuilderContainerState extends State<BuilderContainer> {
                           onPressed: () {
                             Collection updatedCollection = Collection(
                               name: title,
-                              id: collectionIndex,
+                              id: requestId,
                               method: requestType,
                               url: urlController.text.trim(),
                               headers: paramsMap.isNotEmpty ? paramsMap.map((key, value) => MapEntry(key, value.toString())) : null,

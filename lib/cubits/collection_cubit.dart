@@ -72,8 +72,27 @@ class CollectionCubit extends Cubit<CollectionState> {
     String body = encoder.convert(collection.body ?? {});
     String expected = encoder.convert(collection.expected ?? {});
     String automation = encoder.convert(collection.automation ?? {});
-    final response = await database.into(database.requests).insert(
-      RequestsCompanion(
+    if(collection.id < 0) {
+      await database.into(database.requests).insert(
+        RequestsCompanion(
+          name: Value(collection.name),
+          url: Value(collection.url ?? ''),
+          method: Value(collection.method),
+          body: Value(body),
+          expectedResponse: Value(expected),
+          automation: Value(automation),
+          authToken: Value(collection.authToken),
+          headers: Value(headers),
+          count: Value(collection.count),
+          jsonOn: Value(collection.jsonOn),
+          authOn: Value(collection.authOn),
+          expectedOn: Value(collection.expectedOn),
+          automationOn: Value(collection.automationOn),
+          createdAt: Value(DateTime.now()),
+        ),
+      );
+    } else {
+      await database.managers.requests.filter((f) => f.id.equals(collection.id)).update((r) => r(
         name: Value(collection.name),
         url: Value(collection.url ?? ''),
         method: Value(collection.method),
@@ -87,9 +106,9 @@ class CollectionCubit extends Cubit<CollectionState> {
         authOn: Value(collection.authOn),
         expectedOn: Value(collection.expectedOn),
         automationOn: Value(collection.automationOn),
-        createdAt: Value(DateTime.now()),
-      ),
-    );
+      )
+      );
+    }
     fetchSavedRequests();
   }
 
