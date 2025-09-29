@@ -185,4 +185,9 @@ class CollectionCubit extends Cubit<CollectionState> {
     }
     emit(CollectionLoaded(collections: collections, index: index));
   }
+
+  void deleteSavedRequest(int id, int collectionIndex) async {
+    await database.managers.requests.filter((f) => f.id.equals(id)).delete();
+    deleteCollection(collectionIndex);
+  }
 }

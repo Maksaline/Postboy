@@ -185,7 +185,8 @@ class _CollectionContainerState extends State<CollectionContainer> {
                                         ],
                                       ),
                                       onTap: () {
-                                        context.read<CollectionCubit>().deleteCollection(index);
+                                        collections[index].id <= 0 ? context.read<CollectionCubit>().deleteCollection(index)
+                                        : context.read<CollectionCubit>().deleteSavedRequest(collections[index].id, index);
                                       },
                                     ),
                                   ],
