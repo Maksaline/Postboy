@@ -38,6 +38,8 @@ class _CollectionContainerState extends State<CollectionContainer> {
                 ),
               ),
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     children: [
@@ -171,23 +173,33 @@ class _CollectionContainerState extends State<CollectionContainer> {
                                 onTap: () {
                                   context.read<CollectionCubit>().updateIndex(index);
                                 },
-                                trailing: PopupMenuButton(
-                                  tooltip: 'Actions',
-                                  icon: Icon(Icons.more_vert),
-                                  itemBuilder: (context) => [
-                                    PopupMenuItem(
-                                      value: 'delete',
-                                      child: Row(
-                                        children: [
-                                          Icon(Icons.delete, color: Colors.red),
-                                          SizedBox(width: 8.0),
-                                          Text('Delete'),
-                                        ],
-                                      ),
-                                      onTap: () {
-                                        collections[index].id <= 0 ? context.read<CollectionCubit>().deleteCollection(index)
-                                        : context.read<CollectionCubit>().deleteSavedRequest(collections[index].id, index);
-                                      },
+                                trailing: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    if(collections[index].id > 0) IconButton(
+                                      onPressed: () {},
+                                      icon: Icon(Icons.star_rounded, color: theme.colorScheme.primary),
+                                    ),
+                                    PopupMenuButton(
+                                      padding: EdgeInsets.zero,
+                                      tooltip: 'Actions',
+                                      icon: Icon(Icons.more_vert),
+                                      itemBuilder: (context) => [
+                                        PopupMenuItem(
+                                          value: 'delete',
+                                          child: Row(
+                                            children: [
+                                              Icon(Icons.delete, color: Colors.red),
+                                              SizedBox(width: 8.0),
+                                              Text('Delete'),
+                                            ],
+                                          ),
+                                          onTap: () {
+                                            collections[index].id <= 0 ? context.read<CollectionCubit>().deleteCollection(index)
+                                            : context.read<CollectionCubit>().deleteSavedRequest(collections[index].id, index);
+                                          },
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),
