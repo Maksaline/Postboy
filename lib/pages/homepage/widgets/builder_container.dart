@@ -820,14 +820,14 @@ class _BuilderContainerState extends State<BuilderContainer> {
             Row(
               children: [
                 Expanded(
-                  flex: 3,
+                  flex: 4,
                   child: Padding(
                     padding: const EdgeInsets.only(left: 8.0),
                     child: Text('Key', style: Theme.of(context).textTheme.bodyLarge),
                   ),
                 ),
                 Expanded(
-                  flex: 5,
+                  flex: 6,
                   child: Padding(
                     padding: const EdgeInsets.only(left: 8.0),
                     child: Text('Value', style: Theme.of(context).textTheme.bodyLarge),
@@ -957,14 +957,14 @@ class _BuilderContainerState extends State<BuilderContainer> {
             Row(
               children: [
                 Expanded(
-                  flex: 3,
+                  flex: 4,
                   child: Padding(
                     padding: const EdgeInsets.only(left: 8.0),
                     child: Text('Key', style: Theme.of(context).textTheme.bodyLarge),
                   ),
                 ),
                 Expanded(
-                  flex: 5,
+                  flex: 6,
                   child: Padding(
                     padding: const EdgeInsets.only(left: 8.0),
                     child: Text('Value', style: Theme.of(context).textTheme.bodyLarge),
@@ -1220,14 +1220,14 @@ class _BuilderContainerState extends State<BuilderContainer> {
             Row(
               children: [
                 Expanded(
-                  flex: 3,
+                  flex: 4,
                   child: Padding(
                     padding: const EdgeInsets.only(left: 8.0),
                     child: Text('Key', style: Theme.of(context).textTheme.bodyLarge),
                   ),
                 ),
                 Expanded(
-                  flex: 5,
+                  flex: 6,
                   child: Padding(
                     padding: const EdgeInsets.only(left: 8.0),
                     child: Text('Value', style: Theme.of(context).textTheme.bodyLarge),
