@@ -35,7 +35,6 @@ class CollectionCubit extends Cubit<CollectionState> {
   void loadCollections() {
     emit(CollectionLoading());
     try {
-      // Here you can load collections from a database or API if needed
       emit(CollectionLoaded(collections: collections, index: index));
     } catch (e) {
       emit(CollectionFailure(message: e.toString()));
@@ -66,14 +65,14 @@ class CollectionCubit extends Cubit<CollectionState> {
     emit(CollectionLoaded(collections: collections, index: this.index));
   }
 
-  void saveRequest(Collection collection) async {
+  void saveRequest(Collection collection, int collectionIndex, int reqId) async {
     const JsonEncoder encoder = JsonEncoder.withIndent('    ');
     String headers = encoder.convert(collection.headers ?? {});
     String body = encoder.convert(collection.body ?? {});
     String expected = encoder.convert(collection.expected ?? {});
     String automation = encoder.convert(collection.automation ?? {});
     if(collection.id < 0) {
-      await database.into(database.requests).insert(
+      int id = await database.into(database.requests).insert(
         RequestsCompanion(
           name: Value(collection.name),
           url: Value(collection.url ?? ''),
@@ -91,6 +90,7 @@ class CollectionCubit extends Cubit<CollectionState> {
           createdAt: Value(DateTime.now()),
         ),
       );
+      reqId = id;
     } else {
       await database.managers.requests.filter((f) => f.id.equals(collection.id)).update((r) => r(
         name: Value(collection.name),
@@ -109,14 +109,28 @@ class CollectionCubit extends Cubit<CollectionState> {
       )
       );
     }
-    fetchSavedRequests();
+    collections[collectionIndex] = Collection(
+      id: reqId,
+      name: collection.name,
+      url: collection.url,
+      method: collection.method,
+      headers: collection.headers,
+      body: collection.body,
+      authToken: collection.authToken,
+      automation: collection.automation,
+      count: collection.count,
+      expected: collection.expected,
+      jsonOn: collection.jsonOn,
+      authOn: collection.authOn,
+      expectedOn: collection.expectedOn,
+      automationOn: collection.automationOn,
+    );
+    emit(CollectionLoaded(collections: collections, index: index));
+    // fetchSavedRequests();
   }
 
   void fetchSavedRequests() async {
     final response = await database.managers.requests.get();
-    JsonEncoder encoder = JsonEncoder.withIndent('  ');
-    String output = encoder.convert(response);
-    print(output);
     for(var req in response) {
       Map<String, String>? headers;
       Map<String, String>? body;

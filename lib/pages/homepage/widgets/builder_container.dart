@@ -583,7 +583,7 @@ class _BuilderContainerState extends State<BuilderContainer> {
                               expectedOn: expectOutput,
                               automationOn: automationOn,
                             );
-                            context.read<CollectionCubit>().saveRequest(updatedCollection);
+                            context.read<CollectionCubit>().saveRequest(updatedCollection, collectionIndex, requestId);
                           },
                           child: Row(
                             children: [
