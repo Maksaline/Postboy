@@ -18,6 +18,7 @@ class _CollectionContainerState extends State<CollectionContainer> {
   void initState() {
     super.initState();
     context.read<CollectionCubit>().addNewCollection();
+    context.read<CollectionCubit>().fetchSavedRequests();
   }
   @override
   Widget build(BuildContext context) {

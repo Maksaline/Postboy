@@ -117,5 +117,58 @@ class CollectionCubit extends Cubit<CollectionState> {
     JsonEncoder encoder = JsonEncoder.withIndent('  ');
     String output = encoder.convert(response);
     print(output);
+    for(var req in response) {
+      Map<String, String>? headers;
+      Map<String, String>? body;
+      Map<String, String>? expected;
+      Map<String, Map<String, dynamic>>? automation;
+      if(req.headers != null && req.headers!.isNotEmpty) {
+        try {
+          headers = Map<String, String>.from(jsonDecode(req.headers!));
+        } catch(e) {
+          headers = {};
+        }
+      }
+      if(req.body != null && req.body!.isNotEmpty) {
+        try {
+          body = Map<String, String>.from(jsonDecode(req.body!));
+        } catch(e) {
+          body = {};
+        }
+      }
+      if(req.expectedResponse != null && req.expectedResponse!.isNotEmpty) {
+        try {
+          expected = Map<String, String>.from(jsonDecode(req.expectedResponse!));
+        } catch(e) {
+          expected = {};
+        }
+      }
+      if(req.automation != null && req.automation!.isNotEmpty) {
+        try {
+          automation = Map<String, Map<String, dynamic>>.from(jsonDecode(req.automation!));
+        } catch(e) {
+          automation = {};
+        }
+      }
+      collections.add(
+        Collection(
+          id: req.id,
+          name: req.name,
+          url: req.url,
+          method: req.method,
+          headers: headers,
+          body: body,
+          authToken: req.authToken,
+          automation: automation,
+          count: req.count,
+          expected: expected,
+          jsonOn: req.jsonOn,
+          authOn: req.authOn,
+          expectedOn: req.expectedOn,
+          automationOn: req.automationOn,
+        )
+      );
+    }
+    emit(CollectionLoaded(collections: collections, index: index));
   }
 }

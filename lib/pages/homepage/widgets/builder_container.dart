@@ -589,7 +589,7 @@ class _BuilderContainerState extends State<BuilderContainer> {
                             children: [
                               Icon(Icons.save, color: Theme.of(context).colorScheme.onSecondary),
                               SizedBox(width: 8.0),
-                              Text('Save', style: Theme.of(context).textTheme.labelLarge),
+                              Text(requestId < 0 ? 'Save' : 'Update', style: Theme.of(context).textTheme.labelLarge),
                             ],
                           ),
                         )
