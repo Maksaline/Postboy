@@ -218,7 +218,7 @@ class _CollectionContainerState extends State<CollectionContainer> {
               ),
             ),
             Container(
-              padding: EdgeInsets.all(16.0),
+              padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
               decoration: BoxDecoration(
                 border: Border(
                   top: BorderSide(
@@ -257,6 +257,22 @@ class _CollectionContainerState extends State<CollectionContainer> {
                       ),
                     ],
                   ),
+                  SizedBox(height: 8.0),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text('Developed by', style: Theme.of(context).textTheme.bodySmall),
+                      TextButton(
+                        onPressed: () {
+                            // Open developer website or profile
+                        },
+                        style: TextButton.styleFrom(
+                          padding: EdgeInsets.all(4),
+                        ),
+                        child: Text('Makhon' , style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.primary),),
+                      ),
+                    ],
+                  )
                 ],
               ),
             ),
