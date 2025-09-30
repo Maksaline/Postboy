@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:minimalist_api_tester/cubits/collection_cubit.dart';
 import 'package:minimalist_api_tester/models/collection.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../cubits/theme_cubit.dart';
 
@@ -263,13 +264,16 @@ class _CollectionContainerState extends State<CollectionContainer> {
                     children: [
                       Text('Developed by', style: Theme.of(context).textTheme.bodySmall),
                       TextButton(
-                        onPressed: () {
-                            // Open developer website or profile
+                        onPressed: () async {
+                          final Uri url = Uri.parse('https://github.com/maksaline');
+                          if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+                            throw Exception('Could not launch $url');
+                          }
                         },
                         style: TextButton.styleFrom(
                           padding: EdgeInsets.all(4),
                         ),
-                        child: Text('Makhon' , style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.primary),),
+                        child: Text('Maksaline' , style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.primary),),
                       ),
                     ],
                   )
