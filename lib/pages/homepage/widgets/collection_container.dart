@@ -251,7 +251,7 @@ class _CollectionContainerState extends State<CollectionContainer> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('Version 0.1.0', style: Theme.of(context).textTheme.bodySmall),
+                      Text('Version 0.1.2', style: Theme.of(context).textTheme.bodySmall),
                       Text(
                         '© 2025 Postboy',
                         style: Theme.of(context).textTheme.bodySmall,
