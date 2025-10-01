@@ -13,7 +13,7 @@ void main() async {
 
   WindowOptions windowOptions = const WindowOptions(
     title: 'Postboy Desktop',
-    size: Size(1920, 1080), // Set your preferred size
+    // size: Size(1920, 1080),
     center: true,
     backgroundColor: Colors.transparent,
     skipTaskbar: false,
