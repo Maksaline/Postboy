@@ -460,6 +460,26 @@ class _BuilderContainerState extends State<BuilderContainer> {
 
   //----- Communication with cubit functions End-----//
 
+  void saveReq() {
+    Collection updatedCollection = Collection(
+      name: title,
+      id: requestId,
+      method: requestType,
+      url: urlController.text.trim(),
+      headers: paramsMap.isNotEmpty ? paramsMap.map((key, value) => MapEntry(key, value.toString())) : null,
+      body: jsonBodyMap.isNotEmpty ? jsonBodyMap.map((key, value) => MapEntry(key, value.toString())) : null,
+      authToken: authToken.isNotEmpty ? authToken : null,
+      expected: expectedOutputMap.isNotEmpty ? expectedOutputMap.map((key, value) => MapEntry(key, value.toString())) : null,
+      automation: automationMap.isNotEmpty ? automationMap.map((key, value) => MapEntry(key, value)) : null,
+      count: countController.text.isNotEmpty ? int.tryParse(countController.text) : null,
+      jsonOn: bodyNeeded,
+      authOn: authNeeded,
+      expectedOn: expectOutput,
+      automationOn: automationOn,
+    );
+    context.read<CollectionCubit>().saveRequest(updatedCollection, collectionIndex, requestId);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -583,23 +603,38 @@ class _BuilderContainerState extends State<BuilderContainer> {
                             foregroundColor: Theme.of(context).colorScheme.onSecondary,
                           ),
                           onPressed: () {
-                            Collection updatedCollection = Collection(
-                              name: title,
-                              id: requestId,
-                              method: requestType,
-                              url: urlController.text.trim(),
-                              headers: paramsMap.isNotEmpty ? paramsMap.map((key, value) => MapEntry(key, value.toString())) : null,
-                              body: jsonBodyMap.isNotEmpty ? jsonBodyMap.map((key, value) => MapEntry(key, value.toString())) : null,
-                              authToken: authToken.isNotEmpty ? authToken : null,
-                              expected: expectedOutputMap.isNotEmpty ? expectedOutputMap.map((key, value) => MapEntry(key, value.toString())) : null,
-                              automation: automationMap.isNotEmpty ? automationMap.map((key, value) => MapEntry(key, value)) : null,
-                              count: countController.text.isNotEmpty ? int.tryParse(countController.text) : null,
-                              jsonOn: bodyNeeded,
-                              authOn: authNeeded,
-                              expectedOn: expectOutput,
-                              automationOn: automationOn,
-                            );
-                            context.read<CollectionCubit>().saveRequest(updatedCollection, collectionIndex, requestId);
+                            (requestId < 0) ? saveReq() :
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8.0),
+                                  ),
+                                  title: Text('Update Saved Request ?', style: Theme.of(context).textTheme.titleMedium),
+                                  content: Text('Updating the request would override your previously saved information with current information.\nDo you like to proceed?', style: Theme.of(context).textTheme.bodyMedium),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: Text('Cancel', style: Theme.of(context).textTheme.labelLarge),
+                                    ),
+                                    ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: theme.colorScheme.onPrimary,
+                                      ),
+                                      onPressed: () {
+                                        saveReq();
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: Text('Update', style: Theme.of(context).textTheme.labelLarge),
+                                    ),
+                                  ],
+                                );
+                              }
+                            )
+                            ;
                           },
                           child: Row(
                             children: [
