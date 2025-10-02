@@ -186,6 +186,29 @@ class _CollectionContainerState extends State<CollectionContainer> {
                                       tooltip: 'Actions',
                                       icon: Icon(Icons.more_vert),
                                       itemBuilder: (context) => [
+                                        (collections[index].id <= 0) ? PopupMenuItem(
+                                          child: Row(
+                                            children: [
+                                              Icon(Icons.save, color: theme.colorScheme.onPrimary),
+                                              SizedBox(width: 8.0),
+                                              Text('Save'),
+                                            ],
+                                          ),
+                                          onTap: () {
+                                            context.read<CollectionCubit>().saveFromList(index);
+                                          },
+                                        ) : PopupMenuItem(
+                                          child: Row(
+                                            children: [
+                                              Icon(Icons.bookmark_remove_rounded, color: theme.colorScheme.onPrimary),
+                                              SizedBox(width: 8.0),
+                                              Text('Unsave'),
+                                            ],
+                                          ),
+                                          onTap: () {
+                                            context.read<CollectionCubit>().unSaveRequest(index);
+                                          },
+                                        ),
                                         PopupMenuItem(
                                           value: 'delete',
                                           child: Row(

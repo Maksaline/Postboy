@@ -566,7 +566,7 @@ class _BuilderContainerState extends State<BuilderContainer> {
                             foregroundColor: Theme.of(context).colorScheme.onSecondary,
                           ),
                           onPressed: () {
-                            context.read<CollectionCubit>().unSaveRequest(collectionIndex, requestId);
+                            context.read<CollectionCubit>().unSaveRequest(collectionIndex);
                           },
                           child: Row(
                             children: [

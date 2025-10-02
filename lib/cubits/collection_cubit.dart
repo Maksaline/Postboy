@@ -191,11 +191,11 @@ class CollectionCubit extends Cubit<CollectionState> {
     deleteCollection(collectionIndex);
   }
 
-  void unSaveRequest(int collectionIndex, int requestId) async {
+  void unSaveRequest(int collectionIndex) async {
     if(collections[collectionIndex].id < 0) {
       return;
     }
-    int deleted = await database.managers.requests.filter((f) => f.id.equals(requestId)).delete();
+    int deleted = await database.managers.requests.filter((f) => f.id.equals(collections[collectionIndex].id)).delete();
     if(deleted > 0) {
       collections[collectionIndex] = Collection(
       id: -1,
@@ -215,5 +215,13 @@ class CollectionCubit extends Cubit<CollectionState> {
       );
     }
     emit(CollectionLoaded(collections: collections, index: index));
+  }
+
+  void saveFromList(int collectionIndex) async {
+    if(collections[collectionIndex].id >= 0) {
+      return;
+    }
+    int reqId = -1;
+    saveRequest(collections[collectionIndex], collectionIndex, reqId);
   }
 }
