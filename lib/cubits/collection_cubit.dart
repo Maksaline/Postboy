@@ -190,4 +190,30 @@ class CollectionCubit extends Cubit<CollectionState> {
     await database.managers.requests.filter((f) => f.id.equals(id)).delete();
     deleteCollection(collectionIndex);
   }
+
+  void unSaveRequest(int collectionIndex, int requestId) async {
+    if(collections[collectionIndex].id < 0) {
+      return;
+    }
+    int deleted = await database.managers.requests.filter((f) => f.id.equals(requestId)).delete();
+    if(deleted > 0) {
+      collections[collectionIndex] = Collection(
+      id: -1,
+      name: collections[collectionIndex].name,
+      url: collections[collectionIndex].url,
+      method: collections[collectionIndex].method,
+      headers: collections[collectionIndex].headers,
+      body: collections[collectionIndex].body,
+      authToken: collections[collectionIndex].authToken,
+      automation: collections[collectionIndex].automation,
+      count: collections[collectionIndex].count,
+      expected: collections[collectionIndex].expected,
+      jsonOn: collections[collectionIndex].jsonOn,
+      authOn: collections[collectionIndex].authOn,
+      expectedOn: collections[collectionIndex].expectedOn,
+      automationOn: collections[collectionIndex].automationOn,
+      );
+    }
+    emit(CollectionLoaded(collections: collections, index: index));
+  }
 }

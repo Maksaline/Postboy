@@ -551,7 +551,6 @@ class _BuilderContainerState extends State<BuilderContainer> {
                                   SnackBar(content: Text('Title cannot be empty')),
                                 );
                               } else {
-                                // context.read<CollectionCubit>().updateName(collectionIndex, newValue);
                                 setState(() {
                                   title = newValue;
                                 });
@@ -561,6 +560,23 @@ class _BuilderContainerState extends State<BuilderContainer> {
                           ),
                         ),
                         const Spacer(),
+                        if(requestId >= 0) ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: (theme.brightness == Brightness.dark) ? Theme.of(context).colorScheme.secondary : Colors.grey.shade400,
+                            foregroundColor: Theme.of(context).colorScheme.onSecondary,
+                          ),
+                          onPressed: () {
+                            context.read<CollectionCubit>().unSaveRequest(collectionIndex, requestId);
+                          },
+                          child: Row(
+                            children: [
+                              Icon(Icons.bookmark_remove_rounded, color: Theme.of(context).colorScheme.onSecondary),
+                              SizedBox(width: 8.0),
+                              Text('Unsave', style: Theme.of(context).textTheme.labelLarge),
+                            ],
+                          ),
+                        ),
+                        SizedBox(width: 8.0),
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             backgroundColor: (theme.brightness == Brightness.dark) ? Theme.of(context).colorScheme.secondary : Colors.grey.shade400,
