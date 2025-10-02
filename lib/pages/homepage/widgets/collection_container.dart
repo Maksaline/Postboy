@@ -220,7 +220,36 @@ class _CollectionContainerState extends State<CollectionContainer> {
                                           ),
                                           onTap: () {
                                             collections[index].id <= 0 ? context.read<CollectionCubit>().deleteCollection(index)
-                                            : context.read<CollectionCubit>().deleteSavedRequest(collections[index].id, index);
+                                            : showDialog(
+                                              context: context,
+                                              builder: (context) {
+                                                return AlertDialog(
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius.circular(8.0),
+                                                  ),
+                                                  title: Text('Delete Saved Request ?', style: Theme.of(context).textTheme.titleMedium),
+                                                  content: Text('Deleting this request would delete it permanently from database. Would you like to continue?', style: Theme.of(context).textTheme.bodyMedium),
+                                                  actions: [
+                                                    TextButton(
+                                                      onPressed: () {
+                                                        Navigator.of(context).pop();
+                                                      },
+                                                      child: Text('Cancel', style: Theme.of(context).textTheme.labelLarge),
+                                                    ),
+                                                    ElevatedButton(
+                                                      style: ElevatedButton.styleFrom(
+                                                        backgroundColor: Colors.red,
+                                                      ),
+                                                      onPressed: () {
+                                                        context.read<CollectionCubit>().deleteSavedRequest(collections[index].id, index);
+                                                        Navigator.of(context).pop();
+                                                      },
+                                                      child: Text('Delete', style: Theme.of(context).textTheme.labelLarge),
+                                                    ),
+                                                  ],
+                                                );
+                                              }
+                                            );
                                           },
                                         ),
                                       ],
