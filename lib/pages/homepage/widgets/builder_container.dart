@@ -47,7 +47,7 @@ class _BuilderContainerState extends State<BuilderContainer> {
   void addParamsPair() {
     if (paramsPairs.isNotEmpty) {
       bool hasEmptyFields = paramsPairs.any((pair) =>
-      pair.keyController.text.isEmpty || pair.valueController.text.isEmpty
+      pair.keyController.text.isEmpty && pair.valueController.text.isEmpty
       );
 
       if (hasEmptyFields) {
@@ -102,12 +102,15 @@ class _BuilderContainerState extends State<BuilderContainer> {
     String cleanBaseUrl = baseUrl.split('?')[0];
 
     List<String> queryParams = [];
+    paramsMap.clear();
     for (var pair in paramsPairs) {
       String key = pair.keyController.text.trim();
       String value = pair.valueController.text.trim();
 
       if(value.isNotEmpty) {
         paramsMap[key] = value;
+      } else {
+        paramsMap[key] = '<<<Empty>>>';
       }
 
       String encodedKey = Uri.encodeComponent(key);
@@ -364,7 +367,7 @@ class _BuilderContainerState extends State<BuilderContainer> {
         collection.headers!.forEach((key, value) {
           addParamsPair();
           paramsPairs.last.keyController.text = key;
-          paramsPairs.last.valueController.text = value.toString();
+          paramsPairs.last.valueController.text = value.toString() == "<<<Empty>>>" ? '' : value.toString();
         });
         buildUrlWithQueryParams();
       } else {
