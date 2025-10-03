@@ -227,7 +227,7 @@ class _CollectionContainerState extends State<CollectionContainer> {
                                                   shape: RoundedRectangleBorder(
                                                     borderRadius: BorderRadius.circular(8.0),
                                                   ),
-                                                  title: Text('Delete Saved Request ?', style: Theme.of(context).textTheme.titleMedium),
+                                                  title: Text('Delete Saved Request ?', style: Theme.of(context).textTheme.titleLarge),
                                                   content: Text('Deleting this request would delete it permanently from database. Would you like to continue?', style: Theme.of(context).textTheme.bodyMedium),
                                                   actions: [
                                                     TextButton(

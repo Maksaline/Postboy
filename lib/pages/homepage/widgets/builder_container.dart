@@ -580,68 +580,76 @@ class _BuilderContainerState extends State<BuilderContainer> {
                           ),
                         ),
                         const Spacer(),
-                        if(requestId >= 0) ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: (theme.brightness == Brightness.dark) ? Theme.of(context).colorScheme.secondary : Colors.grey.shade400,
-                            foregroundColor: Theme.of(context).colorScheme.onSecondary,
-                          ),
-                          onPressed: () {
-                            context.read<CollectionCubit>().unSaveRequest(collectionIndex);
-                          },
-                          child: Row(
-                            children: [
-                              Icon(Icons.bookmark_remove_rounded, color: Theme.of(context).colorScheme.onSecondary),
-                              SizedBox(width: 8.0),
-                              Text('Unsave', style: Theme.of(context).textTheme.labelLarge),
-                            ],
+                        if(requestId >= 0) Tooltip(
+                          message: 'Remove from local storage',
+                          waitDuration: Duration(milliseconds: 200),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: (theme.brightness == Brightness.dark) ? Theme.of(context).colorScheme.secondary : Colors.grey.shade400,
+                              foregroundColor: Theme.of(context).colorScheme.onSecondary,
+                            ),
+                            onPressed: () {
+                              context.read<CollectionCubit>().unSaveRequest(collectionIndex);
+                            },
+                            child: Row(
+                              children: [
+                                Icon(Icons.bookmark_remove_rounded, color: Theme.of(context).colorScheme.onSecondary),
+                                SizedBox(width: 8.0),
+                                Text('Unsave', style: Theme.of(context).textTheme.labelLarge),
+                              ],
+                            ),
                           ),
                         ),
                         SizedBox(width: 8.0),
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: (theme.brightness == Brightness.dark) ? Theme.of(context).colorScheme.secondary : Colors.grey.shade400,
-                            foregroundColor: Theme.of(context).colorScheme.onSecondary,
-                          ),
-                          onPressed: () {
-                            (requestId < 0) ? saveReq() :
-                            showDialog(
-                              context: context,
-                              builder: (context) {
-                                return AlertDialog(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8.0),
-                                  ),
-                                  title: Text('Update Saved Request ?', style: Theme.of(context).textTheme.titleMedium),
-                                  content: Text('Updating the request would override your previously saved information with current information.\nDo you like to proceed?', style: Theme.of(context).textTheme.bodyMedium),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                      child: Text('Cancel', style: Theme.of(context).textTheme.labelLarge),
+                        Tooltip(
+                          waitDuration: Duration(milliseconds: 200),
+                          message: requestId < 0 ? 'Save to local storage' : 'Update Saved Request',
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: (theme.brightness == Brightness.dark) ? Theme.of(context).colorScheme.secondary : Colors.grey.shade400,
+                              foregroundColor: Theme.of(context).colorScheme.onSecondary,
+                            ),
+                            onPressed: () {
+                              (requestId < 0) ? saveReq() :
+                              showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8.0),
                                     ),
-                                    ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: theme.colorScheme.onPrimary,
+                                    title: Text('Update Saved Request ?', style: Theme.of(context).textTheme.titleLarge),
+                                    content: Text('Updating the request would override your previously saved information with current information.\nDo you like to proceed?', style: Theme.of(context).textTheme.bodyMedium),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: Text('Cancel', style: Theme.of(context).textTheme.labelLarge),
                                       ),
-                                      onPressed: () {
-                                        saveReq();
-                                        Navigator.of(context).pop();
-                                      },
-                                      child: Text('Update', style: Theme.of(context).textTheme.labelLarge),
-                                    ),
-                                  ],
-                                );
-                              }
-                            )
-                            ;
-                          },
-                          child: Row(
-                            children: [
-                              Icon(Icons.save, color: Theme.of(context).colorScheme.onSecondary),
-                              SizedBox(width: 8.0),
-                              Text(requestId < 0 ? 'Save' : 'Update', style: Theme.of(context).textTheme.labelLarge),
-                            ],
+                                      ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: theme.colorScheme.onPrimary,
+                                        ),
+                                        onPressed: () {
+                                          saveReq();
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: Text('Update', style: Theme.of(context).textTheme.labelLarge),
+                                      ),
+                                    ],
+                                  );
+                                }
+                              )
+                              ;
+                            },
+                            child: Row(
+                              children: [
+                                Icon(Icons.save, color: Theme.of(context).colorScheme.onSecondary),
+                                SizedBox(width: 8.0),
+                                Text(requestId < 0 ? 'Save' : 'Update', style: Theme.of(context).textTheme.labelLarge),
+                              ],
+                            ),
                           ),
                         )
                       ],
