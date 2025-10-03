@@ -218,8 +218,6 @@ class _BuilderContainerState extends State<BuilderContainer> {
       addBodyParamsPair();
     }
   }
-
-
   //----- JSON function start -----//
 
 
@@ -248,7 +246,7 @@ class _BuilderContainerState extends State<BuilderContainer> {
   }
 
   void buildExpectedOutput() {
-    expectedOutputMap.clear(); // Clear previous map
+    expectedOutputMap.clear();
     for (var pair in expectedPairs) {
       String key = pair.keyController.text.trim();
       String value = pair.valueController.text.trim();
