@@ -994,7 +994,7 @@ class _BuilderContainerState extends State<BuilderContainer> {
                 SizedBox(width: 8.0),
                 Text('Run  ', style: Theme.of(context).textTheme.labelLarge),
                 SizedBox(
-                  width: 40,
+                  width: 50,
                   height: 30,
                   child: TextFormField(
                     controller: countController,
@@ -1003,7 +1003,7 @@ class _BuilderContainerState extends State<BuilderContainer> {
                       FilteringTextInputFormatter.digitsOnly, // Only digits 0-9
                     ],
                     decoration: InputDecoration(
-                      contentPadding: EdgeInsets.all(4.0),
+                      contentPadding: EdgeInsets.only(top: 4.0, bottom: 4.0, left: 8.0, right: 8.0),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8.0),
                       ),
