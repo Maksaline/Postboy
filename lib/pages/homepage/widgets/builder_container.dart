@@ -1150,9 +1150,9 @@ class _BuilderContainerState extends State<BuilderContainer> {
                 },
                 child: Row(
                   children: [
-                    Icon(Icons.format_align_left, size: 16.0),
-                    const SizedBox(width: 4.0),
-                    Text('Format'),
+                    Icon(Icons.format_align_left, size: 16.0, color: Theme.of(context).colorScheme.onSecondary),
+                    const SizedBox(width: 8.0),
+                    Text('Format', style: Theme.of(context).textTheme.bodyLarge,),
                   ],
                 ),
               ),
@@ -1177,9 +1177,9 @@ class _BuilderContainerState extends State<BuilderContainer> {
                 },
                 child: Row(
                   children: [
-                    Icon(Icons.copy, size: 16.0),
-                    const SizedBox(width: 4.0),
-                    Text('Copy'),
+                    Icon(Icons.copy, size: 16.0, color: Theme.of(context).colorScheme.onSecondary,),
+                    const SizedBox(width: 8.0),
+                    Text('Copy', style: Theme.of(context).textTheme.bodyLarge,),
                   ],
                 ),
               )
