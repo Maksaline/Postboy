@@ -77,10 +77,11 @@ Unlike heavyweight alternatives, Postboy focuses on what developers actually use
 ## Technology Stack
 
 Built with Flutter for cross-platform compatibility and native performance.
+Used Dio for HTTP requests, Drift for local database and BLoC for state management.
 
 ## License
 
-[Will be added soon]
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Contributing
 
