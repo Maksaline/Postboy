@@ -391,7 +391,6 @@ class _BuilderContainerState extends State<BuilderContainer> {
             bodyPairs.last.selectedOption = map['option'];
             bodyPairs.last.lower = map['lower'] ?? -1;
             bodyPairs.last.upper = map['upper'] ?? -1;
-            bodyPairs.last.valueController.text = '<<<Automation>>>';
           } else {
             automationMap.remove(key);
           }
