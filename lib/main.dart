@@ -1,3 +1,4 @@
+import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:minimalist_api_tester/cubits/collection_cubit.dart';
@@ -8,11 +9,11 @@ import 'package:window_manager/window_manager.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   await windowManager.ensureInitialized();
 
   WindowOptions windowOptions = const WindowOptions(
-    title: 'Postboy Desktop',
+    title: 'Postboy',
     center: true,
     backgroundColor: Colors.transparent,
     skipTaskbar: false,
@@ -20,7 +21,7 @@ void main() async {
   );
 
   windowManager.waitUntilReadyToShow(windowOptions, () async {
-    await windowManager.setTitle('Postboy Desktop');
+    await windowManager.setTitle('Postboy');
     await windowManager.show();
     await windowManager.focus();
     await windowManager.maximize();
@@ -29,14 +30,18 @@ void main() async {
   runApp(BlocProvider(
       create: (context) => ThemeCubit(),
       child: const MyApp()
-  )
+    )
   );
+
+  doWhenWindowReady(() {
+    const initialSize = Size(1310, 700);
+    appWindow.minSize = initialSize;
+  });
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ThemeCubit, ThemeData>(

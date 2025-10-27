@@ -58,7 +58,10 @@ class _CollectionContainerState extends State<CollectionContainer> {
                         ),
                       ),
                       SizedBox(width: 16.0),
-                      Text('Postboy', style: Theme.of(context).textTheme.titleLarge?.copyWith(fontSize: 32),)
+                      Text(
+                        'Postboy',
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(fontSize: 32),
+                      )
                     ],
                   ),
                   SizedBox(height: 8.0),
@@ -280,58 +283,66 @@ class _CollectionContainerState extends State<CollectionContainer> {
                   ),
                 ),
               ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text('Dark Mode', style: Theme.of(context).textTheme.titleMedium),
-                      Switch(
-                        value: theme.brightness == Brightness.dark,
-                        onChanged: (value) {
-                          context.read<ThemeCubit>().toggleTheme();
-                        },
-                        activeColor: theme.colorScheme.primary,
-                        inactiveTrackColor: theme.colorScheme.onPrimary
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('Dark Mode', style: Theme.of(context).textTheme.titleMedium),
+                          Switch(
+                            value: theme.brightness == Brightness.dark,
+                            onChanged: (value) {
+                              context.read<ThemeCubit>().toggleTheme();
+                            },
+                            activeColor: theme.colorScheme.primary,
+                            inactiveTrackColor: theme.colorScheme.onPrimary
+                          )
+                        ],
+                      ),
+                      SizedBox(height: 8.0),
+                      (constraints.maxWidth > 170) ? Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('Version 0.2.1', style: Theme.of(context).textTheme.bodySmall),
+                          Text('© 2025 Postboy', style: Theme.of(context).textTheme.bodySmall),
+                        ],
+                      ) : Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          Text('Version 0.2.1', style: Theme.of(context).textTheme.bodySmall),
+                          SizedBox(height: 4.0),
+                          Text('© 2025 Postboy', style: Theme.of(context).textTheme.bodySmall),
+                        ],
+                      ),
+                      SizedBox(height: 8.0),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text('Developed by', style: Theme.of(context).textTheme.bodySmall),
+                          TextButton(
+                            onPressed: () async {
+                              final Uri url = Uri.parse('https://github.com/maksaline');
+                              if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+                                throw Exception('Could not launch $url');
+                              }
+                            },
+                            style: TextButton.styleFrom(
+                              padding: EdgeInsets.all(4),
+                            ),
+                            child: Text('Maksaline' , style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.primary),),
+                          ),
+                        ],
                       )
                     ],
-                  ),
-                  SizedBox(height: 8.0),
-                  Wrap(
-                    alignment: WrapAlignment.spaceBetween,
-                    spacing: 8.0,
-                    runSpacing: 8.0,
-                    children: [
-                      Text('Version 0.1.2', style: Theme.of(context).textTheme.bodySmall),
-                      Text(
-                        '© 2025 Postboy',
-                        style: Theme.of(context).textTheme.bodySmall,
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 8.0),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text('Developed by', style: Theme.of(context).textTheme.bodySmall),
-                      TextButton(
-                        onPressed: () async {
-                          final Uri url = Uri.parse('https://github.com/maksaline');
-                          if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
-                            throw Exception('Could not launch $url');
-                          }
-                        },
-                        style: TextButton.styleFrom(
-                          padding: EdgeInsets.all(4),
-                        ),
-                        child: Text('Maksaline' , style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.primary),),
-                      ),
-                    ],
-                  )
-                ],
+                  );
+                }
               ),
             ),
           ],

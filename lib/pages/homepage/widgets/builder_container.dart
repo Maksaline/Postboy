@@ -896,7 +896,7 @@ class _BuilderContainerState extends State<BuilderContainer> {
                   flex: 1,
                   child: Padding(
                     padding: const EdgeInsets.only(left: 8.0),
-                    child: Text('Actions', style: Theme.of(context).textTheme.bodyLarge),
+                    child: Text('Actions', style: Theme.of(context).textTheme.bodyLarge, maxLines: 1, overflow: TextOverflow.ellipsis),
                   ),
                 ),
               ],
@@ -1033,7 +1033,7 @@ class _BuilderContainerState extends State<BuilderContainer> {
                   flex: 1,
                   child: Padding(
                     padding: const EdgeInsets.only(left: 8.0),
-                    child: Text('Actions', style: Theme.of(context).textTheme.bodyLarge),
+                    child: Text('Actions', style: Theme.of(context).textTheme.bodyLarge, maxLines: 1, overflow: TextOverflow.ellipsis),
                   ),
                 ),
               ],
@@ -1296,7 +1296,7 @@ class _BuilderContainerState extends State<BuilderContainer> {
                   flex: 1,
                   child: Padding(
                     padding: const EdgeInsets.only(left: 8.0),
-                    child: Text('Actions', style: Theme.of(context).textTheme.bodyLarge),
+                    child: Text('Actions', style: Theme.of(context).textTheme.bodyLarge, maxLines: 1, overflow: TextOverflow.ellipsis),
                   ),
                 ),
               ],
