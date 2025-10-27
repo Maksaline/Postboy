@@ -300,8 +300,10 @@ class _CollectionContainerState extends State<CollectionContainer> {
                     ],
                   ),
                   SizedBox(height: 8.0),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  Wrap(
+                    alignment: WrapAlignment.spaceBetween,
+                    spacing: 8.0,
+                    runSpacing: 8.0,
                     children: [
                       Text('Version 0.1.2', style: Theme.of(context).textTheme.bodySmall),
                       Text(
