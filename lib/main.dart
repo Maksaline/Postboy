@@ -52,7 +52,7 @@ class MyApp extends StatelessWidget {
             BlocProvider(create: (context) => CollectionCubit()),
           ],
           child: MaterialApp(
-            title: 'Postboy Pro',
+            title: 'Postboy',
             debugShowCheckedModeBanner: false,
             theme: theme,
             home: const Homepage(),
