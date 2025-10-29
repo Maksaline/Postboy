@@ -5,8 +5,6 @@ import 'package:minimalist_api_tester/pages/homepage/widgets/collection_containe
 import 'package:minimalist_api_tester/pages/homepage/widgets/response_container.dart';
 import 'package:minimalist_api_tester/pages/homepage/widgets/window_buttons.dart';
 
-import '../../../cubits/theme_cubit.dart';
-
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
 
